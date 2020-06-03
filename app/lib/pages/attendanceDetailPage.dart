@@ -88,9 +88,7 @@ class _AttendanceDetailPageState extends State<AttendanceDetailPage> {
                       )
                   )
                 ),
-            Expanded(
-              flex: 2,
-              child: Container(
+            Container(
                 padding: EdgeInsets.all(5.0),
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -121,7 +119,6 @@ class _AttendanceDetailPageState extends State<AttendanceDetailPage> {
                   ],
                 ),
               ),
-            )
         ],
       )
     );

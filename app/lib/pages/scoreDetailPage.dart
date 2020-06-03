@@ -90,9 +90,7 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
                   )
                   )
                 ),
-            Expanded(
-              flex: 3,
-              child: Container(
+            Container(
                 padding: EdgeInsets.all(5.0),
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -138,7 +136,6 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
                     )
                   ],
                 ),
-              ),
             )
         ],
       )

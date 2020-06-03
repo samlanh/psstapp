@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-//import 'package:easy_localization/easy_localization.dart';
 import 'package:app/localization/localization.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../url_api.dart';
+import 'newsDetailPage.dart';
 
 class NewsEventPage extends StatefulWidget {
   final String currentLang ;
@@ -74,29 +74,6 @@ class _NewsEventPageState extends State<NewsEventPage> {
                       ),
                       child: Carousel(
                         images:[
-//                            ListView.builder (
-//                              itemCount: newsList.length,
-//                              itemBuilder: (BuildContext context, int index) {
-//                                  return Container(
-//                                      child:Row(
-//                                        crossAxisAlignment: CrossAxisAlignment.start,
-//                                        mainAxisAlignment: MainAxisAlignment.start,
-//                                        children: <Widget>[
-//                                          Expanded(
-//                                              flex:1,
-//                                              child: Padding(padding:EdgeInsets.all(10.0),
-//                                                  child: new Image.asset('images/score.png',fit: BoxFit.contain))
-//                                          ),
-//                                          Expanded(
-//                                            flex:2,
-//                                            child: new Text(index.toString()+newsList[index]['title'],
-//                                                style: TextStyle(color: Colors.white.withOpacity(0.9)),textAlign: TextAlign.start),
-//                                          )
-//                                        ],
-//                                      )
-//                                  );
-//                                }
-//                            ),
                           new Container(
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +86,7 @@ class _NewsEventPageState extends State<NewsEventPage> {
                                 ),
                                 Expanded(
                                   flex:2,
-                                  child: new Text("When you arrive at ELT, you will start your first day with a school orientation.",
+                                  child: new Text("When you arrive at PSIS First, you will start your first day with a school orientation.",
                                       style: TextStyle(color: Colors.white.withOpacity(0.9)),textAlign: TextAlign.start),
                                 )
                               ],
@@ -131,7 +108,7 @@ class _NewsEventPageState extends State<NewsEventPage> {
                       child: new CircularProgressIndicator()) :   ListView.builder (
                       itemCount: newsList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return  _buildPaymentItem(newsList[index]);
+                        return  _buildNewsItem(newsList[index]);
                       }
                   ),
                 )
@@ -154,133 +131,77 @@ class _NewsEventPageState extends State<NewsEventPage> {
       });
     }
   }
-  Widget _buildPaymentItem(rowData) {
-    return new Container(
-        margin: EdgeInsets.only(bottom: 10.0),
-        decoration: new BoxDecoration(
-          color: Colors.white,
-          border: new Border.all(width: 1.0,color:Color(0xffe4e6e8)),
-          borderRadius: new BorderRadius.circular(4.0),
-          boxShadow: <BoxShadow>[
-            new BoxShadow (
-              color: const Color(0xcce4e6e8),
-              offset: new Offset(1.0,1.0),
-              blurRadius: 1.0,
-            ),
-          ],
-        ),
-//        decoration: new BoxDecoration(
-//          color: Colors.white,
-//          boxShadow: <BoxShadow>[
-//            new BoxShadow (
-//              color: Color(0xff009ccf),
-//              offset: new Offset(0.0, 2.0),
-//              blurRadius: 2.0,
-//            ),
-//          ],
-//        ),
-        padding: EdgeInsets.only( right: 5.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: <Color>[
-                        Color(0xff054798),
-                        Color(0xff009ccf),
-                      ])
+  Widget _buildNewsItem(rowData) {
+    return GestureDetector(
+      onTap: (){
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => NewsDetailsPage(newsData:rowData)
+        ));
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 10.0),
+          decoration: new BoxDecoration(
+            color: Colors.white,
+            border: new Border.all(width: 1.0,color:Color(0xffe4e6e8)),
+            borderRadius: new BorderRadius.circular(4.0),
+            boxShadow: <BoxShadow>[
+              new BoxShadow (
+                color: const Color(0xcce4e6e8),
+                offset: new Offset(1.0,1.0),
+                blurRadius: 1.0,
               ),
-              height: 89.0,
-              child:Image.asset('images/news.png') //_rowTitleSchedule(Icon(Icons.library_books,color: Colors.white,size: 40.0,),rowData['publishDate'].toString()),
-            ) ,
-            SizedBox(width: 5.0,height: 5.0),
-            Expanded(
-              child: Container(
-                height: 100.0,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:[
-                      Text(rowData['title'].toString(),style: TextStyle(fontFamily: 'Khmer'),),
-//                      Flexible(
-//                        child: RichText(
-//                          overflow: TextOverflow.ellipsis,
-//                          strutStyle: StrutStyle(fontSize: 12.0),
-//                          text: TextSpan(
-//                              style: TextStyle(color: Colors.black),
-//                              text: rowData['description'].toString()),
-//                        ),
-//                      ),
-
-                      Directionality( textDirection: TextDirection.ltr,
-                        child: Text(rowData['description'].toString(),textAlign: TextAlign.justify),
-                      ),
-                      Stack(
-                        alignment: AlignmentDirectional.bottomStart,
-                        children: <Widget>[
-                          Text(rowData['publishDate'].toString(),style: TextStyle(color: Colors.black45,fontSize:10.0))
-                        ],
-                      )
-                    ]
-                ),
-              )
-            ),
-          ],
-        )
-
-    );
-  }
-  Widget _rowTitleSchedule(Icon iconType,String subjectName) {
-    return Padding(
-      padding: EdgeInsets.all(5.0),
-      child: Column(
-          children: [
-            iconType,
-            Text(subjectName, style:
-            TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w600,
-                color: Colors.white
-            )
-            ),
-          ]
+            ],
+          ),
+          padding: EdgeInsets.only( right: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: <Color>[
+                            Color(0xff054798),
+                            Color(0xff009ccf),
+                          ])
+                  ),
+                  height: 89.0,
+                  child:(
+                      (rowData['image_feature'].toString()!='')
+                          ? Image.network(StringData.imageURL+'/newsevent/'+rowData['image_feature'])
+                          : Image.asset('images/news.png')
+                  )) ,
+              SizedBox(width: 5.0,height: 5.0),
+              Expanded(
+                  child: Container(
+                    height: 100.0,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children:[
+                          Flexible(
+                            child: Text(rowData['title'].toString(), style: TextStyle(fontFamily: 'Khmer',fontSize: 12.0),
+                                overflow: TextOverflow.fade),
+                          ),
+//                      Text(rowData['title'].toString(),overflow: TextOverflow.ellipsis.,style: TextStyle(fontFamily: 'Khmer',fontSize: 12.0,
+                          Directionality( textDirection: TextDirection.ltr,
+                            child: Text("",textAlign: TextAlign.justify),
+                          ),
+                          Stack(
+                            alignment: AlignmentDirectional.bottomStart,
+                            children: <Widget>[
+                              Text("Publish Date : "+rowData['publish_date'].toString(),style: TextStyle(color: Colors.black45,fontSize:10.0))
+                            ],
+                          )
+                        ]
+                    ),
+                  )
+              ),
+            ],
+          )
       ),
     );
   }
-  Widget _rowScheduleList(Icon iconType,String textData, String priceData){
-    return new Container(
-      child: Row(
-          children: [
-            iconType,
-            Expanded(
-              child: Text(textData,style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black.withOpacity(0.7)
-              )
-              ),
-            ),
-            Expanded(
-              child:  Align(
-                alignment: Alignment.topRight,
-                child: Text(priceData,style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black.withOpacity(0.7),
-                    fontStyle: FontStyle.italic
-                )
-                ),
-              ),
-            )
-          ]
-      ),
-    );
-  }
-
 }

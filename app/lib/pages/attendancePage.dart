@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:app/pages/attendanceDetailPage.dart';
-//import 'package:easy_localization/easy_localization.dart';
 import 'package:app/localization/localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -19,6 +18,7 @@ class AttendancePage extends StatefulWidget {
 
 class _AttendancePageState extends State<AttendancePage> {
   List attendanceList = new List();
+  List noteList = new List();
   bool isLoading = true;
 
   String absent = '0';
@@ -32,7 +32,6 @@ class _AttendancePageState extends State<AttendancePage> {
 
   @override
   void initState(){
-    // TODO: implement initState
     super.initState();
     _getJsonAttendance();
   }
@@ -73,41 +72,37 @@ class _AttendancePageState extends State<AttendancePage> {
           Expanded(
             flex: 10,
             child: isLoading ? new Stack(alignment: AlignmentDirectional.center,
-                children: <Widget>[new CircularProgressIndicator()]) : Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: <Color>[
-                      Color(0xff054798),
-                      Color(0xff009ccf),
-                    ]
-                ),
-              ),
-              child:  Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(40.0)),
-                ),
-                child: Padding(
-                    padding: EdgeInsets.only(top: 45.0,left:10.0,right: 10.0,bottom: 10.0),
-                    child: Container(
-//                        height: MediaQuery.of(context).size.height,
-                        child: attendanceList.isNotEmpty
-                            ? ListView.builder (
-                            itemCount: attendanceList.length,
+                children: <Widget>[new CircularProgressIndicator()]) :
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: <Color>[
+                              Color(0xff054798),
+                              Color(0xff009ccf),
+                            ]
+                        ),
+                      ),
+                      child:  Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(40.0)),
+                        ),
+                        child:  Padding(
+                            padding: EdgeInsets.only(top: 45.0,left:10.0,right: 10.0,bottom: 10.0),
+                            child: attendanceList.isNotEmpty
+                        ? ListView.builder (
+                        itemCount: attendanceList.length,
                             itemBuilder: (BuildContext context, int index) {
                               return  _buildAttendanceItem(attendanceList[index]);
                             }
                         ):Center(child:Text("No Result !"))
-                )
-                ),
-              )
+                        ),
+                      )
+                  ),
           ),
-          ),
-           Expanded(
-            flex: 3,
-            child:  Container(
+          Container(
               padding: EdgeInsets.all(5.0),
               decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -149,9 +144,10 @@ class _AttendancePageState extends State<AttendancePage> {
                 ],
               ),
             ),
-          )
         ],
       )
+        ,
+
     );
   }
 
@@ -162,6 +158,7 @@ class _AttendancePageState extends State<AttendancePage> {
       setState(() {
         if(json.decode(rawData.body)['code']=='SUCCESS'){
           attendanceList = json.decode(rawData.body)['result']['rsDetail'] as List;
+//          noteList = json.decode(rawData.body)['result']['rsNote'] as List;
 
           come = json.decode(rawData.body)['result']['rsSummary']['COME'].toString();
           absent = json.decode(rawData.body)['result']['rsSummary']['ABSENT'].toString();

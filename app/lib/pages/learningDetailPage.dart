@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:app/pages/learningDetailPage.dart';
 import 'package:app/localization/localization.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../url_api.dart';
+//import 'package:http/http.dart' as http;
+//import 'dart:convert';
+//import '../url_api.dart';
 
-class LearningPage extends StatefulWidget {
-  final String studentId;
+
+class LearningDetailPage extends StatefulWidget {
+  final List rowData;
   final String currentLang;
-  LearningPage({this.studentId,this.currentLang});
+
+  LearningDetailPage({this.currentLang,this.rowData});
 
   @override
-  _LearningPageState createState() => _LearningPageState();
+  _LearningDetailPageState createState() => _LearningDetailPageState();
 }
 
-class _LearningPageState extends State<LearningPage> {
-  List learningList = new List();
+class _LearningDetailPageState extends State<LearningDetailPage> {
+  List learningList = new List ();
   bool isLoading = true;
-
   @override
   void initState(){
-    // TODO: implement initState
+    learningList = widget.rowData;
+    isLoading = false;
     super.initState();
-    _getJsonVideoList();
   }
+
+
   @override
   Widget build(BuildContext context) {
     DemoLocalization lang = DemoLocalization.of(context);
@@ -36,7 +38,7 @@ class _LearningPageState extends State<LearningPage> {
                 children: <Widget>[
                   Image.asset('images/elearning.png',height: 50.0),
                   SizedBox(width: 10.0),
-                  Text(lang.tr('Study History'),
+                  Text(lang.tr('Detail'),
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontSize: 18.0,
@@ -60,8 +62,7 @@ class _LearningPageState extends State<LearningPage> {
         children: <Widget>[
           Expanded(
             flex: 10,
-            child: isLoading ? new Stack(alignment: AlignmentDirectional.center,
-                children: <Widget>[new CircularProgressIndicator()]) : Container(
+            child:  Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.centerLeft,
@@ -80,14 +81,13 @@ class _LearningPageState extends State<LearningPage> {
                 child: Padding(
                     padding: EdgeInsets.only(top: 45.0,left:10.0,right: 10.0,bottom: 10.0),
                     child: Container(
-//                        height: MediaQuery.of(context).size.height,
-                        child: learningList.isNotEmpty
-                            ? ListView.builder (
+                        child:isLoading ? new Center(
+                            child: new CircularProgressIndicator()) :  ListView.builder (
                             itemCount: learningList.length,
                             itemBuilder: (BuildContext context, int index) {
                               return  _buildCategoryItems(learningList[index]);
                             }
-                        ):Center(child:Text("No Result !"))
+                        )
                 )
                 ),
               )
@@ -99,18 +99,6 @@ class _LearningPageState extends State<LearningPage> {
     );
   }
 
-  _getJsonVideoList() async{
-    final String urlApi = StringData.eLearning+"&currentLang="+widget.currentLang;
-    http.Response rawData = await http.get(urlApi);
-    if(rawData.statusCode==200){
-      setState(() {
-        if(json.decode(rawData.body)['code']=='SUCCESS'){
-          learningList = json.decode(rawData.body)['result'] as List;
-          isLoading = false;
-        }
-      });
-    }
-  }
   Widget _buildCategoryItems(rowData) {
      return new Container(
        margin: EdgeInsets.only(bottom: 10.0),
@@ -132,9 +120,10 @@ class _LearningPageState extends State<LearningPage> {
         padding: EdgeInsets.only(right: 5.0),
         child: InkWell(
             onTap:(){
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => LearningDetailPage(currentLang:widget.currentLang,rowData:rowData['sub_cate'])
-              ));
+              debugPrint('link to video page');
+//              Navigator.of(context).push(MaterialPageRoute(
+////                  builder: (context) => AttendanceDetailPage(studentId:widget.studentId, currentLang:widget.currentLang,currentMonth:rowData['dateAttendence'],groupId:rowData['group_id'],rowData:rowData)
+//              ));
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,

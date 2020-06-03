@@ -17,6 +17,7 @@ class DisciplinePagePage extends StatefulWidget {
 
 class _DisciplinePagePageState extends State<DisciplinePagePage> {
   List disciplineList = new List();
+  List disciplineNoteList = new List();
   bool isLoading = true;
 
   String moderate = '0';
@@ -102,9 +103,7 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
               )
           ),
           ),
-          Expanded(
-            flex: 3,
-            child: Container(
+          Container(
               padding: EdgeInsets.all(5.0),
               decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -146,7 +145,7 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
                 ],
               ),
             ),
-          )
+
         ],
       )
     );
@@ -158,6 +157,7 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
       setState(() {
         if(json.decode(rawData.body)['code']=='SUCCESS'){
           disciplineList = json.decode(rawData.body)['result']['rsDetail'] as List;
+          disciplineNoteList = json.decode(rawData.body)['result']['rsNote'] as List;
 
           minor = json.decode(rawData.body)['result']['rsSummary']['Minor'].toString();
           moderate = json.decode(rawData.body)['result']['rsSummary']['MODERATE'].toString();

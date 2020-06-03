@@ -234,28 +234,29 @@ class _HomeAppState extends State<HomeApp> {
                         return new InkWell(
                           child: myGridMenu(context, index),
                           onTap: (){
-                            var router = new MaterialPageRoute(builder: (context){
-                              if(index==0){
-                                return PaymentPage(studentId: studentId,currentLang:currentLang);
-                              }else if(index==1){
-                                return new SchedulePage(studentId: studentId,currentLang:currentLang);
-                              }else if(index==2){
-                                return new AttendancePage(studentId: studentId,currentLang:currentLang);
-                              }else if(index==3){
-                                return new ScorePage(studentId: studentId,currentLang:currentLang);
-                              }else if(index==4){
-                                return new DisciplinePagePage(studentId: studentId,currentLang:currentLang);
-                              }else if(index==5){
-                                return new ValuationPage();
-                              }else if(index==6){
-                                return new LearningPage(studentId: studentId,currentLang:currentLang);
-                              }else if(index==7){
-                                return new NewsEventPage(currentLang:currentLang);
-                              }else if(index==8){
-                                return new AboutPage();
-                              }
-                            });
-                            Navigator.of(context).push(router);
+                            routerAntherPage(index);
+//                            var router = new MaterialPageRoute(builder: (context){
+//                              if(index==0){
+//                                return PaymentPage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==1){
+//                                return new SchedulePage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==2){
+//                                return new AttendancePage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==3){
+//                                return new ScorePage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==4){
+//                                return new DisciplinePagePage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==5){
+//                                return new ValuationPage();
+//                              }else if(index==6){
+//                                return new LearningPage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==7){
+//                                return new NewsEventPage(currentLang:currentLang);
+//                              }else if(index==8){
+//                                return new AboutPage(currentLang:currentLang);
+//                              }
+//                            });
+//                            Navigator.of(context).push(router);
                           },
                         );
                       },
@@ -290,7 +291,7 @@ class _HomeAppState extends State<HomeApp> {
                                   ),
                                   Expanded(
                                     flex:2,
-                                    child: new Text("When you arrive at ELT, you will start your first day with a school orientation.",
+                                    child: new Text("When you arrive at PSIS First, you will start your first day with a school orientation.",
                                         style: TextStyle(color: Colors.white.withOpacity(0.9)),textAlign: TextAlign.start),
                                   )
                                 ],
@@ -306,7 +307,7 @@ class _HomeAppState extends State<HomeApp> {
                                   ),
                                   Expanded(
                                     flex:2,
-                                    child: new Text("When you arrive at ELT, you will start your first day with a school orientation.",
+                                    child: new Text("When you arrive at PSIS First, you will start your first day with a school orientation.",
                                         style: TextStyle(color: Colors.white.withOpacity(0.9)),textAlign: TextAlign.start),
                                   )
                                 ],
@@ -322,7 +323,7 @@ class _HomeAppState extends State<HomeApp> {
                                   ),
                                   Expanded(
                                     flex:2,
-                                    child: new Text("When you arrive at ELT, you will start your first day with a school orientation.",
+                                    child: new Text("When you arrive at PSIS First, you will start your first day with a school orientation.",
                                         style: TextStyle(color: Colors.white.withOpacity(0.9)),textAlign: TextAlign.start),
                                   )
                                 ],
@@ -347,8 +348,35 @@ class _HomeAppState extends State<HomeApp> {
           )
       ),
     );
-  }
 
+  }
+  void routerAntherPage(index){
+    //Navigator.push(context, MaterialPageRoute(builder:(context){
+      var router = new MaterialPageRoute(builder: (context){
+//      return PaymentPage(studentId: studentId,currentLang:currentLang);
+      if(index==0){
+        return PaymentPage(studentId: studentId,currentLang:currentLang);
+      }else if(index==1){
+        return new SchedulePage(studentId: studentId,currentLang:currentLang);
+      }else if(index==2){
+        return new AttendancePage(studentId: studentId,currentLang:currentLang);
+      }else if(index==3){
+        return new ScorePage(studentId: studentId,currentLang:currentLang);
+      }else if(index==4){
+        return new DisciplinePagePage(studentId: studentId,currentLang:currentLang);
+      }else if(index==5){
+        return new ValuationPage();
+      }else if(index==6){
+        return new LearningPage(studentId: studentId,currentLang:currentLang);
+      }else if(index==7){
+        return new NewsEventPage(currentLang:currentLang);
+      }else if(index==8){
+        return new AboutPage(currentLang:currentLang);
+      }
+
+    });
+    Navigator.of(context).push(router);
+  }
   Drawer leftMenu(BuildContext context){
 
     DemoLocalization lang = DemoLocalization.of(context);
@@ -520,7 +548,7 @@ class _HomeAppState extends State<HomeApp> {
             }else if(index==6){
               return new NewsEventPage(currentLang:currentLang);
             }else if(index==7){
-//              return new AboutPage();
+              return new AboutPage(currentLang:currentLang);
             }else if(index==8){
               return new SettingPage(studentId: studentId,currentLang:currentLang);
             }

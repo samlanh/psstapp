@@ -85,9 +85,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                           )
                       ),
                     ),
-                    Expanded(
-                        flex: 4,
-                        child:Container(
+                    Container(
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
                                   begin: Alignment.centerLeft,
@@ -139,7 +137,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                               )
                             ],
                           ),
-                        )
+
                     )
                   ],
                 )
@@ -182,9 +180,8 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
         padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 5.0),
         child: Column(
           children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
+            Wrap(
+              direction: Axis.horizontal,
               children: <Widget>[
                 Icon(Icons.filter_list,size: 18.0,color:Colors.black38),
                 _rowTitlePayment(rowData['serviceTitle'].toString(), rowData['serviceCategory'].toString()),
@@ -237,15 +234,14 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
     );
   }
   Widget _rowTitlePayment(String textService, String serviceCate){
+    serviceCate =  (serviceCate=='null')? "" :'('+serviceCate+')';
     return Text.rich(
-
-        TextSpan(
+      TextSpan(
       text: textService,
       style: TextStyle(fontSize:13,fontWeight: FontWeight.bold,color: Color(0xff07548f).withOpacity(0.9),),
       children: <TextSpan>[
         TextSpan(
-            text: '('+serviceCate+')',
-
+            text: serviceCate,
             style: TextStyle(
               fontSize: 10,
               color: Colors.black38

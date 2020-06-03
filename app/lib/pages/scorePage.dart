@@ -3,7 +3,6 @@ import 'package:app/pages/scoreDetailPage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../url_api.dart';
-//import 'package:easy_localization/easy_localization.dart';
 import 'package:app/localization/localization.dart';
 
 class ScorePage extends StatefulWidget {
@@ -98,6 +97,7 @@ class _ScorePageState extends State<ScorePage> {
   }
   _getJsonScore() async{
     final String urlApi = StringData.score+'&stu_id='+widget.studentId+'&currentLang='+widget.currentLang;
+//    debugPrint(urlApi.toString());
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState(() {
@@ -158,7 +158,7 @@ class _ScorePageState extends State<ScorePage> {
                   height: 110.0,
                   padding: EdgeInsets.all(5.0),
                   color: Color(0xff07548f),
-                  child: _rowTitleScore(rowData['for_month'],rowData['academicYear'],Image.asset("images/schedule.png",width:40.0),20.0),
+                  child: _rowTitleScore(rowData['for_month'],rowData['academicYear'].toString(),Image.asset("images/schedule.png",width:40.0),20.0),
               ),
               Expanded(
                 child: Padding(padding: EdgeInsets.only(left: 10.0),

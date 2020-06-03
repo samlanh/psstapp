@@ -122,8 +122,8 @@ class _NotificationPageState extends State<NotificationPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children:[
-                      Text(rowData['Title'].toString(),overflow: TextOverflow.ellipsis,style: TextStyle(fontFamily: 'Khmer',color: Colors.black87,fontWeight:FontWeight.w600)),
-                      Text(rowData['Description'].toString(),overflow: TextOverflow.ellipsis,maxLines:5),
+                      Text(rowData['title'].toString(),overflow: TextOverflow.ellipsis,style: TextStyle(fontFamily: 'Khmer',color: Colors.black87,fontWeight:FontWeight.w600)),
+                      Text(rowData['description'].toString(),overflow: TextOverflow.ellipsis,maxLines:5),
                       Text(rowData['ShowDate'].toString(),style: TextStyle(color: Colors.black54,fontSize:11.0)),
                     ]
                 ),
