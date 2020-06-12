@@ -141,6 +141,7 @@ class _HomeAppState extends State<HomeApp> {
   String studentName='';
   String stuCode='';
   String studentId='';
+  String title='';
   String currentLang = '1';
   List sliderList = new List();
   bool isLoading = true;
@@ -301,9 +302,9 @@ class _HomeAppState extends State<HomeApp> {
       var router = new MaterialPageRoute(builder: (context){
 //      return PaymentPage(studentId: studentId,currentLang:currentLang);
       if(index==0){
-        return PaymentPage(studentId: studentId,currentLang:currentLang);
+        return PaymentPage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
       }else if(index==1){
-        return new SchedulePage(studentId: studentId,currentLang:currentLang);
+        return new SchedulePage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
       }else if(index==2){
         return new AttendancePage(studentId: studentId,currentLang:currentLang);
       }else if(index==3){
@@ -523,7 +524,7 @@ class _HomeAppState extends State<HomeApp> {
               new Expanded(
                   child: new Text(lang.tr(grideList[i].name),
                       style: TextStyle(color:Colors.white,//Colors.black54,
-                          fontSize: 14.0,
+                          fontSize: 13.5,
                           fontFamily: 'Beba',
                           fontWeight: FontWeight.bold
                       )

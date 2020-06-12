@@ -1,4 +1,4 @@
-
+import 'package:flutter/material.dart';
 class StringData{
   static String imageURL = 'http://192.168.1.8/psst/trunk/public/images';
   static String mainUrl = 'http://192.168.1.8/psst/trunk/public/api/index';
@@ -22,4 +22,19 @@ class StringData{
   static String eLearningVideo = mainUrl+'?url=elearningvideo';
   static String downloadTranscript = mainUrl+'?url=transcriptpdf';
   static String slieshow = mainUrl+'?url=slieshow';
+}
+Widget notFoundPage(){
+  return Center(
+    child: Container(
+      child: Column(
+        children: <Widget>[
+          Icon(Icons.open_in_browser,size: 50.0),
+          Text("Sorry!No result found.",style: TextStyle(fontSize: 18.0,color: Colors.black54)),
+          SizedBox(height: 10.0),
+          Text("We're sorry what you were looking for.",style:TextStyle(fontSize: 14.0,color: Colors.black26)),
+          Text("Please try again later.",style:TextStyle(fontSize: 14.0,color: Colors.black26))
+        ],
+      ),
+    ),
+  );
 }

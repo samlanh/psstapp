@@ -480,7 +480,7 @@ class _AboutPageState extends State<AboutPage> {
                         if (await canLaunch("tel://"+dataRow['phone'].toString())) {//"tel://+85570418002"
                           await launch("tel://"+dataRow['phone'].toString());
                         }
-                      },
+                      }
                     )
                 ),
               ],
