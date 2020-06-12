@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:app/localization/localization.dart';
-//import 'package:http/http.dart' as http;
-//import 'dart:convert';
-//import '../url_api.dart';
-
+import 'learningVideoPage.dart';
 
 class LearningDetailPage extends StatefulWidget {
   final List rowData;
   final String currentLang;
-
   LearningDetailPage({this.currentLang,this.rowData});
 
   @override
@@ -16,7 +12,10 @@ class LearningDetailPage extends StatefulWidget {
 }
 
 class _LearningDetailPageState extends State<LearningDetailPage> {
+
+  List videoLearningList = new List();
   List learningList = new List ();
+
   bool isLoading = true;
   @override
   void initState(){
@@ -24,7 +23,6 @@ class _LearningDetailPageState extends State<LearningDetailPage> {
     isLoading = false;
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +36,7 @@ class _LearningDetailPageState extends State<LearningDetailPage> {
                 children: <Widget>[
                   Image.asset('images/elearning.png',height: 50.0),
                   SizedBox(width: 10.0),
-                  Text(lang.tr('Detail'),
+                  Text(lang.tr('CHOOSE_SUBJECT'),
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontSize: 18.0,
@@ -52,8 +50,8 @@ class _LearningDetailPageState extends State<LearningDetailPage> {
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                         colors: <Color>[
-                          Color(0xff054798),
-                          Color(0xff009ccf),
+                          Colors.red,
+                          Colors.redAccent.withOpacity(0.9),
                         ])
                 ),
               ),
@@ -68,8 +66,8 @@ class _LearningDetailPageState extends State<LearningDetailPage> {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: <Color>[
-                      Color(0xff054798),
-                      Color(0xff009ccf),
+                      Colors.red,
+                      Colors.redAccent.withOpacity(0.9),
                     ]
                 ),
               ),
@@ -93,7 +91,6 @@ class _LearningDetailPageState extends State<LearningDetailPage> {
               )
           ),
           ),
-
         ],
       )
     );
@@ -120,10 +117,9 @@ class _LearningDetailPageState extends State<LearningDetailPage> {
         padding: EdgeInsets.only(right: 5.0),
         child: InkWell(
             onTap:(){
-              debugPrint('link to video page');
-//              Navigator.of(context).push(MaterialPageRoute(
-////                  builder: (context) => AttendanceDetailPage(studentId:widget.studentId, currentLang:widget.currentLang,currentMonth:rowData['dateAttendence'],groupId:rowData['group_id'],rowData:rowData)
-//              ));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => LearningVideoPage(currentLang:widget.currentLang,categoryId:rowData['id'])
+              ));
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,

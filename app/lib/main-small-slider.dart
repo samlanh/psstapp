@@ -25,10 +25,9 @@ import 'package:app/pages/notification.dart';
 import 'package:app/pages/learningPage.dart';
 //import 'package:app/pages/contactPage.dart';
 import 'package:flutter/services.dart';
+
+
 import 'package:shared_preferences/shared_preferences.dart';
-import 'url_api.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 
 void main() {
@@ -41,6 +40,7 @@ void main() {
 }
 
 class MyApp extends StatefulWidget{
+
   void setLocale(BuildContext context,Locale locale){
     _MyAppState state = context.findAncestorStateOfType<_MyAppState>();
     state.setLocale(locale);
@@ -57,13 +57,14 @@ class _MyAppState extends State<MyApp>{
     });
   }
   @override
-  void didChangeDependencies(){
+  void didChangeDependencies() {
     getLocale().then((locale){
       setState(() {
         this._locale = locale;
       });
     });
     super.didChangeDependencies();
+
   }
 
   @override
@@ -82,7 +83,7 @@ class _MyAppState extends State<MyApp>{
     }else{
       return MaterialApp(
           debugShowCheckedModeBanner: false,
-//          title: 'Welcome to Mobile App',
+          title: 'Welcome to Mobile App',
           locale: _locale,
           supportedLocales: [
             Locale('en', 'US'),
@@ -118,7 +119,7 @@ class _MyAppState extends State<MyApp>{
             ),
             styleTextUnderTheLoader: new TextStyle(),
             photoSize: 100.0,
-//            loaderColor: Colors.red,
+            loaderColor: Colors.red,
           )
       );
     }
@@ -132,6 +133,7 @@ class HomeApp extends StatefulWidget {
 class _HomeAppState extends State<HomeApp> {
 
   void _changeLanguage(languageCode) async{
+
     Locale _temp = await setLocale(languageCode);
     MyApp().setLocale(context,_temp);
   }
@@ -142,14 +144,10 @@ class _HomeAppState extends State<HomeApp> {
   String stuCode='';
   String studentId='';
   String currentLang = '1';
-  List sliderList = new List();
-  bool isLoading = true;
-  List<NetworkImage> imagesList = List<NetworkImage>();
   @override
   void initState() {
-    checkLoginStatus();
-    _getSlider();
     super.initState();
+    checkLoginStatus();
   }
   checkLoginStatus() async {
     sharedPreferences = await SharedPreferences.getInstance();
@@ -162,44 +160,19 @@ class _HomeAppState extends State<HomeApp> {
       currentLang = (Localizations.localeOf(context).languageCode == "km")?'1':'2';//sharedPreferences.getString('currentLang');
     }
   }
-  _getSlider() async{
-    final String urlApi = StringData.slieshow;
-    http.Response rawData = await http.get(urlApi);
-    if(rawData.statusCode==200){
-      setState(() {
-        if(json.decode(rawData.body)['code']=='SUCCESS'){
-           sliderList = json.decode(rawData.body)['result'] as List;
-          for (var i = 0; i < sliderList.length; i++) {
-             imagesList.add(NetworkImage(StringData.imageURL+'/slide/'+sliderList[i]['images'].toString()));
-          }
-          isLoading = false;
-        }
-      });
-    }
-  }
 
-  Widget sliderContence(){
-    return SizedBox(
-        height: 200.0,
-        width: MediaQuery.of(context).size.width,
-        child:  Carousel(
-        images:imagesList,
-          dotSize: 10.0,
-          dotSpacing: 10.0,
-          dotColor: Color(0xff07548f),
-          indicatorBgPadding: 10.0,
-          dotBgColor: Colors.transparent,
-          borderRadius: false,
-        )
-      );
-  }
+
   @override
   Widget build(BuildContext context) {
+//      Locale _temp;
+//    var data = EasyLocalizationProvider.of(context).data;
+
+//    Locale myLocale = DemoLocalization.of(context);
     DemoLocalization myLocale = DemoLocalization.of(context);
     return  Scaffold(
       appBar : new AppBar(
         backgroundColor: Color(0xff07548f),
-        elevation: 0.0,
+//        elevation: 0.0,
         title: new Text(myLocale.tr('school_name')),
         centerTitle: true,
         actions: <Widget>[
@@ -239,57 +212,137 @@ class _HomeAppState extends State<HomeApp> {
                 Color(0xff1290a2),
               ],
             ),
+            image: new DecorationImage(
+                image: new ExactAssetImage('images/bordermenu.png'),
+                fit: BoxFit.scaleDown,
+                alignment: FractionalOffset.topCenter
+            ),
           ),
           child: Column(
             children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-//                    color:Colors.red, //Color(0xff1290a2),
-                    boxShadow: <BoxShadow>[
-                      new BoxShadow (
-                        color:Colors.black12,
-                        offset: new Offset(0,2.0),
-                        blurRadius: 1.0,
+              new Expanded(
+                  flex:8,
+                  child: new Container(
+                    margin: EdgeInsets.only(top: 8.0),
+                    child: new GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
                       ),
-                    ],
-                  ),
-                  child: isLoading ? new Stack(alignment: AlignmentDirectional.center,
-                      children: <Widget>[new CircularProgressIndicator()]) : sliderContence()//sliderContence()
-                ),
-                Expanded(
-                  flex:4,
-                  child:
-                  Stack(
-                    children: <Widget>[
-                      Container(
-                        decoration: BoxDecoration(
-                          image: new DecorationImage(
-                              image: new ExactAssetImage('images/bordermenu.png'),
-                              fit: BoxFit.scaleDown,
-                              alignment: FractionalOffset.topCenter
-                          ),
-//                          color: Colors.red
-                        ),
-
-                        margin: EdgeInsets.only(top: 8.0),
-                        child: new GridView.builder(
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                          ),
-                          itemCount: grideList.length,
-                          itemBuilder: (BuildContext context ,int index){
-                            return new InkWell(
-                              child: myGridMenu(context, index),
-                              onTap: (){
-                                routerAntherPage(index);
-                              },
-                            );
+                      itemCount: grideList.length,
+                      itemBuilder: (BuildContext context ,int index){
+                        return new InkWell(
+                          child: myGridMenu(context, index),
+                          onTap: (){
+                            routerAntherPage(index);
+//                            var router = new MaterialPageRoute(builder: (context){
+//                              if(index==0){
+//                                return PaymentPage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==1){
+//                                return new SchedulePage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==2){
+//                                return new AttendancePage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==3){
+//                                return new ScorePage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==4){
+//                                return new DisciplinePagePage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==5){
+//                                return new ValuationPage();
+//                              }else if(index==6){
+//                                return new LearningPage(studentId: studentId,currentLang:currentLang);
+//                              }else if(index==7){
+//                                return new NewsEventPage(currentLang:currentLang);
+//                              }else if(index==8){
+//                                return new AboutPage(currentLang:currentLang);
+//                              }
+//                            });
+//                            Navigator.of(context).push(router);
                           },
-                        ),
-                      )
-                    ],
+                        );
+                      },
+                    ),
                   )
               ),
+              new Expanded(
+                  flex:2,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xff1290a2),
+                      boxShadow: <BoxShadow>[
+                        new BoxShadow (
+                          color:Colors.black12,
+                          offset: new Offset(0,2.0),
+                          blurRadius: 1.0,
+                        ),
+                      ],
+                    ),
+                    child: new SizedBox(
+                        height: 200.0,
+                        width: 350.0,
+                        child: Carousel(
+                          images:[
+                            new Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      flex:1,
+                                      child: Padding(padding:EdgeInsets.all(10.0),
+                                          child: new Image.asset('images/schoollogo.png',fit: BoxFit.contain))
+                                  ),
+                                  Expanded(
+                                    flex:2,
+                                    child: new Text("When you arrive at PSIS First, you will start your first day with a school orientation.",
+                                        style: TextStyle(color: Colors.white.withOpacity(0.9)),textAlign: TextAlign.start),
+                                  )
+                                ],
+                              ),
+                            ),
+                            new Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      flex:1,
+                                      child: Padding(padding:EdgeInsets.all(10.0),
+                                          child: new Image.asset('images/score.png',fit: BoxFit.contain))
+                                  ),
+                                  Expanded(
+                                    flex:2,
+                                    child: new Text("When you arrive at PSIS First, you will start your first day with a school orientation.",
+                                        style: TextStyle(color: Colors.white.withOpacity(0.9)),textAlign: TextAlign.start),
+                                  )
+                                ],
+                              ),
+                            ),
+                            new Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      flex:1,
+                                      child: Padding(padding:EdgeInsets.all(10.0),
+                                          child: new Image.asset('images/evaluation.png',fit: BoxFit.contain))
+                                  ),
+                                  Expanded(
+                                    flex:2,
+                                    child: new Text("When you arrive at PSIS First, you will start your first day with a school orientation.",
+                                        style: TextStyle(color: Colors.white.withOpacity(0.9)),textAlign: TextAlign.start),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                          dotSize: 4.0,
+                          dotSpacing: 15.0,
+                          dotColor: Colors.lightGreenAccent,
+                          indicatorBgPadding: 5.0,
+                          dotBgColor: Colors.transparent,
+                          borderRadius: false,
+                        )
+                    ),
+                  )
+              ),
+              new Expanded(flex: 1,
+                child: Container(
+                ),
+              )
             ],
           )
       ),

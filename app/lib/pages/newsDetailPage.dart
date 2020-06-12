@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../url_api.dart';
 import 'package:flutter_html/flutter_html.dart';
-
+import 'package:app/localization/localization.dart';
 class NewsDetailsPage extends StatefulWidget {
   final newsData;
 
@@ -11,13 +11,22 @@ class NewsDetailsPage extends StatefulWidget {
 }
 
 class _NewsDetailsPageState extends State<NewsDetailsPage> {
+
   @override
   Widget build(BuildContext context) {
+    DemoLocalization lang = DemoLocalization.of(context);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
           centerTitle: true,
+          title: Row(
+            children: <Widget>[
+              Image.asset('images/news.png',height: 50.0),
+              SizedBox(width: 5.0,),
+              Text(lang.tr("READ_NEWS")),
+            ],
+          ),
           flexibleSpace: Container(
             decoration: BoxDecoration(
                 gradient: LinearGradient(

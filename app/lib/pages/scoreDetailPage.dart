@@ -3,6 +3,8 @@ import 'package:app/localization/localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../url_api.dart';
+//import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
+
 
 class ScoreDetailPage extends StatefulWidget {
   final studentId,currentLang,scoreId,rowData;
@@ -15,15 +17,11 @@ class ScoreDetailPage extends StatefulWidget {
 class _ScoreDetailPageState extends State<ScoreDetailPage> {
   List scoreList = new List();
   bool isLoading = true;
-  @override
-  void initState(){
-    // TODO: implement initState
-    super.initState();
-    _getJsonScoreDetail();
-  }
+
   @override
   Widget build(BuildContext context){
     DemoLocalization lang = DemoLocalization.of(context);
+
     return Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.transparent,
@@ -39,6 +37,12 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
                           fontSize: 18.0,
                           color: Colors.white)
                   ),
+                  FlatButton.icon(
+                      onPressed: () async {
+                        debugPrint('here');
+                      }
+                      ,icon: Icon(Icons.cloud_download), label: Text("Download")
+                  )
                 ],
               ),
               flexibleSpace: Container(

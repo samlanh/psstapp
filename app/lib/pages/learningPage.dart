@@ -9,7 +9,6 @@ class LearningPage extends StatefulWidget {
   final String studentId;
   final String currentLang;
   LearningPage({this.studentId,this.currentLang});
-
   @override
   _LearningPageState createState() => _LearningPageState();
 }
@@ -50,25 +49,29 @@ class _LearningPageState extends State<LearningPage> {
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                         colors: <Color>[
-                          Color(0xff054798),
-                          Color(0xff009ccf),
+                          Colors.red,
+                          Colors.redAccent.withOpacity(0.9),
                         ])
                 ),
               ),
             ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Expanded(
             flex: 10,
-            child: isLoading ? new Stack(alignment: AlignmentDirectional.center,
-                children: <Widget>[new CircularProgressIndicator()]) : Container(
+                child: isLoading ? new Center(
+                  child: new CircularProgressIndicator(),
+                )
+            :Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: <Color>[
-                      Color(0xff054798),
-                      Color(0xff009ccf),
+                      Colors.red,
+                      Colors.redAccent.withOpacity(0.9),
                     ]
                 ),
               ),

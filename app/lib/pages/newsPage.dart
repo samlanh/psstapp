@@ -18,6 +18,7 @@ class _NewsEventPageState extends State<NewsEventPage> {
 
   bool isLoading = true;
   List newsList = new List();
+  List<NetworkImage> imagesList = List<NetworkImage>();
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _NewsEventPageState extends State<NewsEventPage> {
             children: <Widget>[
               Image.asset('images/news.png',height: 50.0),
               SizedBox(width: 5.0,),
-              Text("News and Events"),
+              Text(lang.tr("News & Event")),
             ],
           ),
           flexibleSpace: Container(
@@ -72,34 +73,8 @@ class _NewsEventPageState extends State<NewsEventPage> {
                                 Color(0xff009ccf),
                               ])
                       ),
-                      child: Carousel(
-                        images:[
-                          new Container(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Expanded(
-                                    flex:1,
-                                    child: Padding(padding:EdgeInsets.all(10.0),
-                                        child: new Image.asset('images/schoollogo.png',fit: BoxFit.contain))
-                                ),
-                                Expanded(
-                                  flex:2,
-                                  child: new Text("When you arrive at PSIS First, you will start your first day with a school orientation.",
-                                      style: TextStyle(color: Colors.white.withOpacity(0.9)),textAlign: TextAlign.start),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                        dotSize: 4.0,
-                        dotSpacing: 15.0,
-                        dotColor: Colors.lightGreenAccent,
-                        indicatorBgPadding: 5.0,
-                        dotBgColor: Colors.transparent,
-                        borderRadius: false,
-                      ),
+                      child: isLoading ? new Stack(alignment: AlignmentDirectional.center,
+                          children: <Widget>[new CircularProgressIndicator()]) : sliderContence()
                     )
                 ),
                 Expanded(
@@ -123,13 +98,32 @@ class _NewsEventPageState extends State<NewsEventPage> {
     if(rawData.statusCode==200){
       setState(() {
         if(json.decode(rawData.body)['code']=='SUCCESS'){
-          newsList = json.decode(rawData.body)['result'] as List;
+          newsList = json.decode(rawData.body)['result']['normal_news'] as List;
+          var listFeature =  json.decode(rawData.body)['result']['feature_news'] as List;
+          for (var i = 0; i < listFeature.length; i++) {
+            imagesList.add(NetworkImage(StringData.imageURL+'/newsevent/'+listFeature[i]['image_feature'].toString(),scale: 1.0));
+          }
           isLoading = false;
         }else{
           //if not data
         }
       });
     }
+  }
+  Widget sliderContence(){
+    return SizedBox(
+        height: 200.0,
+        width: MediaQuery.of(context).size.width,
+        child:  Carousel(
+          images:imagesList,
+          dotSize: 10.0,
+          dotSpacing: 10.0,
+          dotColor: Color(0xff07548f),
+          indicatorBgPadding: 10.0,
+          dotBgColor: Colors.transparent,
+          borderRadius: false,
+        )
+    );
   }
   Widget _buildNewsItem(rowData) {
     return GestureDetector(
@@ -171,7 +165,7 @@ class _NewsEventPageState extends State<NewsEventPage> {
                   child:(
                       (rowData['image_feature'].toString()!='')
                           ? Image.network(StringData.imageURL+'/newsevent/'+rowData['image_feature'])
-                          : Image.asset('images/news.png')
+                          : Image.asset('images/news.png',fit: BoxFit.cover)
                   )) ,
               SizedBox(width: 5.0,height: 5.0),
               Expanded(
@@ -185,7 +179,6 @@ class _NewsEventPageState extends State<NewsEventPage> {
                             child: Text(rowData['title'].toString(), style: TextStyle(fontFamily: 'Khmer',fontSize: 12.0),
                                 overflow: TextOverflow.fade),
                           ),
-//                      Text(rowData['title'].toString(),overflow: TextOverflow.ellipsis.,style: TextStyle(fontFamily: 'Khmer',fontSize: 12.0,
                           Directionality( textDirection: TextDirection.ltr,
                             child: Text("",textAlign: TextAlign.justify),
                           ),

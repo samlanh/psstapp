@@ -101,7 +101,9 @@ class _AttendancePageState extends State<AttendancePage> {
                         ),
                       )
                   ),
+
           ),
+
           Container(
               padding: EdgeInsets.all(5.0),
               decoration: BoxDecoration(
@@ -144,13 +146,22 @@ class _AttendancePageState extends State<AttendancePage> {
                 ],
               ),
             ),
+          Container(
+            padding: EdgeInsets.all(10.2),
+            width: MediaQuery.of(context).size.width,
+            child:  FloatingActionButton.extended(
+              onPressed: () {
+                _showTermDialog(context);
+              },
+              label: Text('Attendance Note'),
+              icon: Icon(Icons.person_pin),
+              backgroundColor: Colors.redAccent,
+            ),
+          )
         ],
       )
-        ,
-
     );
   }
-
   _getJsonAttendance() async{
     final String urlApi = StringData.attendance+'&stu_id='+widget.studentId+'&currentLang='+widget.currentLang;
     http.Response rawData = await http.get(urlApi);
@@ -158,8 +169,7 @@ class _AttendancePageState extends State<AttendancePage> {
       setState(() {
         if(json.decode(rawData.body)['code']=='SUCCESS'){
           attendanceList = json.decode(rawData.body)['result']['rsDetail'] as List;
-//          noteList = json.decode(rawData.body)['result']['rsNote'] as List;
-
+          noteList = json.decode(rawData.body)['result']['rsNote'] as List;
           come = json.decode(rawData.body)['result']['rsSummary']['COME'].toString();
           absent = json.decode(rawData.body)['result']['rsSummary']['ABSENT'].toString();
           permission = json.decode(rawData.body)['result']['rsSummary']['PERMISSION'].toString();
@@ -192,7 +202,6 @@ class _AttendancePageState extends State<AttendancePage> {
 }
   Widget _buildAttendanceItem(rowData) {
     DemoLocalization lang = DemoLocalization.of(context);
-
      return new Container(
        margin: EdgeInsets.only(bottom: 10.0),
         decoration: new BoxDecoration(
@@ -209,7 +218,6 @@ class _AttendancePageState extends State<AttendancePage> {
                 blurRadius: 3.0,
               ),
             ],
-
         ),
         padding: EdgeInsets.only(right: 5.0),
         child: InkWell(
@@ -249,7 +257,8 @@ class _AttendancePageState extends State<AttendancePage> {
                                 ),
                               )
                             ]
-                        ))
+                          )
+                        )
                 ),
               ],
             )
@@ -284,13 +293,13 @@ class _AttendancePageState extends State<AttendancePage> {
                  fontSize: fontSize,
                  fontWeight: FontWeight.w500,
                  color: Color(0xff07548f).withOpacity(0.9)
-             )
+               )
              ),
            ),
            Expanded(
-             child:  Align(
+             child: Align(
                alignment: Alignment.topRight,
-               child: Text(priceData,style: TextStyle(
+               child:Text(priceData,style: TextStyle(
                    fontFamily: 'Montserrat',
                    fontSize: fontSize,
                    fontWeight: FontWeight.bold,
@@ -301,6 +310,50 @@ class _AttendancePageState extends State<AttendancePage> {
              ),
            )
           ]
+      ),
+    );
+  }
+  void _showTermDialog(BuildContext context){
+    DemoLocalization lang = DemoLocalization.of(context);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.all(0.0),
+          title: new Text(lang.tr("NOTE"),textAlign: TextAlign.center,style: TextStyle(fontSize: 14.0),),
+          content: Container(
+            height:MediaQuery.of(context).size.height*0.5,
+            width: MediaQuery.of(context).size.width*1,
+            child: Container(
+              child: ListView.builder (
+                  itemCount: noteList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return  _termConditon(noteList[index]);
+                  }
+              ),
+            )
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Widget _termConditon(rowData){
+    return Container(
+      padding: EdgeInsets.all(6.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Text(rowData['title'].toString(),style: TextStyle(fontSize: 12.0,fontFamily: 'Khmer'),)
+        ],
       ),
     );
   }

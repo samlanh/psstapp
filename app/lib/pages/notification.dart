@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-//import 'package:easy_localization/easy_localization.dart';
 import 'package:app/localization/localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../url_api.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class NotificationPage extends StatefulWidget {
   final studentId,currentLang;
@@ -123,7 +123,9 @@ class _NotificationPageState extends State<NotificationPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children:[
                       Text(rowData['title'].toString(),overflow: TextOverflow.ellipsis,style: TextStyle(fontFamily: 'Khmer',color: Colors.black87,fontWeight:FontWeight.w600)),
-                      Text(rowData['description'].toString(),overflow: TextOverflow.ellipsis,maxLines:5),
+                       Html(
+                      data: rowData['description'].toString(),
+                      ),
                       Text(rowData['ShowDate'].toString(),style: TextStyle(color: Colors.black54,fontSize:11.0)),
                     ]
                 ),

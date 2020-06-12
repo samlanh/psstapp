@@ -7,6 +7,9 @@ import 'dart:convert';
 import '../url_api.dart';
 //import 'package:flutter_html_textview_render/html_text_view.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'dart:developer';
+import 'package:app/localization/localization.dart';
 
 
 
@@ -24,15 +27,74 @@ class _AboutPageState extends State<AboutPage> {
   int page =0;
   List aboutList = new List();
   List contactList = new List();
-
   bool isLoading = true;
+
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  YoutubePlayerController _controller;
+  TextEditingController _idController;
+  TextEditingController _seekToController;
+
+  PlayerState _playerState;
+  YoutubeMetaData _videoMetaData;
+  double _volume = 100;
+  bool _muted = false;
+  bool _isPlayerReady = false;
+  List videoLearningList = new List();
+
+  final List<String> _ids = [
+    'LxakMi-jzoM',
+    '8U4rZBEfmz0',
+    'Pfog_f4gric',
+
+  ];
 
   @override
   void initState(){
-    super.initState();
+
     _getJsonContact();
+
+    _controller = YoutubePlayerController(
+      initialVideoId: _ids.first,
+      flags: const YoutubePlayerFlags(
+        mute: false,
+        autoPlay: true,
+        disableDragSeek: false,
+        loop: false,
+        isLive: false,
+        forceHD: false,
+        enableCaption: true,
+      ),
+    )..addListener(listener);
+    _idController = TextEditingController();
+    _seekToController = TextEditingController();
+    _videoMetaData = const YoutubeMetaData();
+    _playerState = PlayerState.unknown;
+    super.initState();
+  }
+  void listener() {
+    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
+      setState(() {
+        _playerState = _controller.value.playerState;
+        _videoMetaData = _controller.metadata;
+      });
+    }
   }
 
+  @override
+  void deactivate() {
+    // Pauses video while navigating to next page.
+    _controller.pause();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _idController.dispose();
+    _seekToController.dispose();
+    super.dispose();
+  }
 
   _getJsonContact() async{
     final String urlApi = StringData.contactUs+'&currentLang='+widget.currentLang;
@@ -135,6 +197,21 @@ class _AboutPageState extends State<AboutPage> {
               ):Center(child:Text("No Result !")),
             ),
 
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.red,
+                boxShadow: <BoxShadow>[
+                  new BoxShadow (
+                    color: Colors.lightBlue.withOpacity(0.2),
+                    offset: new Offset(0.0, 2.0),
+                    blurRadius: 20.0,
+                  ),
+                ],
+              ),
+              child: videoPageview(),
+              )
+
+
           ],
         ),
 
@@ -144,6 +221,8 @@ class _AboutPageState extends State<AboutPage> {
                   new BottomNavigationBarItem(icon: new Icon(Icons.person_pin), title: new Text("About us",
                     style: TextStyle(fontSize:16.0,fontWeight: FontWeight.bold))),
                   new BottomNavigationBarItem(icon: new Icon(Icons.location_on), title: new Text("Contact us",
+                      style: TextStyle(fontSize:16.0,fontWeight: FontWeight.bold))),
+                  new BottomNavigationBarItem(icon: new Icon(Icons.play_circle_outline), title: new Text("Video",
                       style: TextStyle(fontSize:16.0,fontWeight: FontWeight.bold))),
                 ],
                 onTap: navigatePage,
@@ -560,6 +639,285 @@ class _AboutPageState extends State<AboutPage> {
               ),
             )
           ]
+      ),
+    );
+  }
+  Widget videoPageview(){
+    DemoLocalization lang = DemoLocalization.of(context);
+    return YoutubePlayerBuilder(
+      player: YoutubePlayer(
+        controller: _controller,
+        showVideoProgressIndicator: true,
+        progressIndicatorColor: Colors.blueAccent,
+        topActions: <Widget>[
+          Expanded(
+            child: Text(
+              _controller.metadata.title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.settings,
+              color: Colors.white,
+              size: 25.0,
+            ),
+            onPressed: () {
+              log('Settings Tapped!');
+            },
+          ),
+        ],
+        onReady: () {
+          _isPlayerReady = true;
+        },
+        onEnded: (data) {
+          _controller
+              .load(_ids[(_ids.indexOf(data.videoId) + 1) % _ids.length]);
+          _showSnackBar('Next Video Started!');
+        },
+      ),
+      builder: (context, player) => Scaffold(
+        key: _scaffoldKey,
+        body: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child:
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      player,
+                      Container(
+                        color: Colors.black.withOpacity(0.9),
+                        padding: const EdgeInsets.all(1.0),
+                        margin: EdgeInsets.all(0.0),
+                        child: Column(
+                          children: [
+//                        Row(
+//                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                          children: [
+//                            IconButton(
+//                              icon: const Icon(Icons.skip_previous,color: Colors.white),
+//                              onPressed: _isPlayerReady
+//                                  ? () => _controller.load(_ids[
+//                              (_ids.indexOf(_controller.metadata.videoId) -
+//                                  1) %
+//                                  _ids.length])
+//                                  : null,
+//                            ),
+//                            IconButton(
+//                              icon: Icon(
+//                                  _controller.value.isPlaying
+//                                      ? Icons.pause
+//                                      : Icons.play_arrow,color: Colors.white
+//                              ),
+//                              onPressed: _isPlayerReady
+//                                  ? () {
+//                                _controller.value.isPlaying
+//                                    ? _controller.pause()
+//                                    : _controller.play();
+//                                setState(() {});
+//                              }: null,
+//                            ),
+//                            IconButton(
+//                              icon: const Icon(Icons.skip_next,color: Colors.white),
+//                              onPressed: _isPlayerReady
+//                                  ? () => _controller.load(_ids[
+//                              (_ids.indexOf(_controller.metadata.videoId) +
+//                                  1) %
+//                                  _ids.length])
+//                                  : null,
+//                            ),
+//                          ],
+//                        ),
+                            Row(
+                              children: <Widget>[
+                                IconButton(
+                                  icon: Icon(_muted ? Icons.volume_off : Icons.volume_up,color: Colors.white),
+                                  onPressed: _isPlayerReady
+                                      ? () {
+                                    _muted
+                                        ? _controller.unMute()
+                                        : _controller.mute();
+                                    setState(() {
+                                      _muted = !_muted;
+                                    });
+                                  } : null,
+                                ),
+                                Expanded(
+                                  child: Slider(
+                                    inactiveColor: Colors.transparent,
+                                    value: _volume,
+                                    min: 0.0,
+                                    max: 100.0,
+                                    divisions: 10,
+                                    label: '${(_volume).round()}',
+                                    onChanged: _isPlayerReady
+                                        ? (value) {
+                                      setState(() {
+                                        _volume = value;
+                                      });
+                                      _controller.setVolume(_volume.round());
+                                    }
+                                        : null,
+                                  ),
+                                ),
+                                FullScreenButton(
+                                  controller: _controller,
+                                  color:  Colors.white,
+                                ),
+                              ],
+                            ),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 800),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20.0),
+                                color: _getStateColor(_playerState),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(bottom: 10.0),
+                        margin: EdgeInsets.only(bottom: 2.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                            bottom: BorderSide(width: 2.0, color:Colors.black12),
+                          ),
+                        ),
+//                    child: _text('Title', _videoMetaData.title),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: _text("", _videoMetaData.title),
+                ),
+
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                      child: Container(
+                        child: Container(
+                            height: 200.0,
+//                            child: ListView.builder (
+//                                itemCount: videoLearningList.length,
+//                                itemBuilder: (BuildContext context, int index) {
+//                                  return  _buildCategoryItems(videoLearningList[index]);
+//                                }
+//                            )
+                        ) ,
+                      )
+                  ),
+                )
+
+//            _loadCueButton('PLAY','uCU5O4aDqME&t'),//Played
+              ],
+            )
+        ),
+      ),
+    );
+  }
+  Widget _text(String title, String value) {
+    return RichText(
+      text: TextSpan(
+        text: '$title ',
+        style: const TextStyle(
+          color: Colors.black45,
+          fontWeight: FontWeight.bold,
+        ),
+        children: [
+          TextSpan(
+            text: value ?? '',
+            style: const TextStyle(
+              color: Colors.black45,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getStateColor(PlayerState state) {
+    switch (state) {
+      case PlayerState.unknown:
+        return Colors.grey[700];
+      case PlayerState.unStarted:
+        return Colors.pink;
+      case PlayerState.ended:
+        return Colors.red;
+      case PlayerState.playing:
+        return Colors.blueAccent;
+      case PlayerState.paused:
+        return Colors.orange;
+      case PlayerState.buffering:
+        return Colors.yellow;
+      case PlayerState.cued:
+        return Colors.blue[900];
+      default:
+        return Colors.blue;
+    }
+  }
+  Widget get _space => const SizedBox(height: 10);
+  Widget _loadCueButton(String action,String url) {
+    return Expanded(
+      child: MaterialButton(
+        color: Colors.blueAccent,
+        onPressed: _isPlayerReady
+            ? () {
+          url = "https://www.youtube.com/watch?v="+url;
+          var id = YoutubePlayer.convertUrlToId(url);
+          if (action == 'PLAY') _controller.load(id);
+          FocusScope.of(context).requestFocus(FocusNode());
+        }
+            : null,
+        disabledColor: Colors.grey,
+        disabledTextColor: Colors.black,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14.0),
+          child: Text(
+            action,
+            style: const TextStyle(
+              fontSize: 18.0,
+              color: Colors.white,
+              fontWeight: FontWeight.w300,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showSnackBar(String message) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 16.0,
+          ),
+        ),
+        backgroundColor: Colors.blueAccent,
+        behavior: SnackBarBehavior.floating,
+        elevation: 1.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50.0),
+        ),
       ),
     );
   }

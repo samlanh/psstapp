@@ -5,6 +5,7 @@ import 'package:app/localization/localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../url_api.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class DisciplinePagePage extends StatefulWidget {
   final String studentId;
@@ -123,8 +124,8 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
                         children: <Widget>[
 //                          Text("Total Disciplince",style: TextStyle(fontSize:16.0,color: Colors.white,fontWeight: FontWeight.bold)),
                           SizedBox(height: 5.0),
-                          _RowSummerData("Year",academicYear),
-                          _RowSummerData("Class ",className),
+                          _rowSummerData("Year",academicYear),
+                          _rowSummerData("Class ",className),
                         ],
                       ),
                   ),
@@ -134,10 +135,10 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        _RowSummerData(lang.tr('Minor'),minor),
-                        _RowSummerData(lang.tr('Moderate'),moderate),
-                        _RowSummerData(lang.tr('Major'),major),
-                        _RowSummerData(lang.tr('Other'),other),
+                        _rowSummerData(lang.tr('Minor'),minor),
+                        _rowSummerData(lang.tr('Moderate'),moderate),
+                        _rowSummerData(lang.tr('Major'),major),
+                        _rowSummerData(lang.tr('Other'),other),
                         Text(lang.tr("Total")+" : "+totalAmt,style: TextStyle(fontSize:18.0,color: Colors.white,fontWeight: FontWeight.bold)),
                       ],
                     ),
@@ -145,7 +146,18 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
                 ],
               ),
             ),
-
+          Container(
+            padding: EdgeInsets.all(10.2),
+            width: MediaQuery.of(context).size.width,
+            child:  FloatingActionButton.extended(
+              onPressed: () {
+                _showTermDialog(context);
+              },
+              label: Text('Discpline Note'),
+              icon: Icon(Icons.person_pin),
+              backgroundColor: Colors.redAccent,
+            ),
+          )
         ],
       )
     );
@@ -171,7 +183,7 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
       });
     }
   }
-  Widget _RowSummerData(String strLabel,String strData){
+  Widget _rowSummerData(String strLabel,String strData){
      return Row(
        crossAxisAlignment: CrossAxisAlignment.start,
        mainAxisAlignment: MainAxisAlignment.start,
@@ -194,7 +206,6 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
         decoration: new BoxDecoration(
           color: Colors.white,
           border: Border(
-//            top: BorderSide(width: 1.0, color: Color(0xffdddddd)),
             right: BorderSide(width: 1.0, color: Color(0xffdddddd)),
             bottom: BorderSide(width: 2.0, color: Color(0xff07548f)),
             left: BorderSide(width: 1.0, color: Color(0xffdddddd)),
@@ -222,7 +233,7 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
                     height: 110.0,
                     padding: EdgeInsets.all(5.0),
                     color: Color(0xff07548f),
-                    child: _rowTitleAttendance(lang.tr(rowData['dateLabel'].toString()),Image.asset("images/schedule.png",width:40.0),20.0),
+                    child: _rowTitleDiscipline(lang.tr(rowData['dateLabel'].toString()),Image.asset("images/schedule.png",width:40.0),20.0),
                 ),
                 Expanded(
                     child: Padding(padding: EdgeInsets.only(left: 10.0),
@@ -234,10 +245,10 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
                                 alignment: FractionalOffset.topRight,
                                 child:  Icon(Icons.more_horiz,size: 22.0,color:Colors.black45),
                               ),
-                              _rowAttendanceType(lang.tr('Minor'),rowData['Minor'].toString(),14.0),
-                              _rowAttendanceType(lang.tr('Moderate'),rowData['MODERATE'].toString(),14.0),
-                              _rowAttendanceType(lang.tr('Major'),rowData['MAJOR'].toString(),14.0),
-                              _rowAttendanceType(lang.tr('Other'),rowData['OTHER'].toString(),14.0),
+                              _rowDisciplineType(lang.tr('Minor'),rowData['Minor'].toString(),14.0),
+                              _rowDisciplineType(lang.tr('Moderate'),rowData['MODERATE'].toString(),14.0),
+                              _rowDisciplineType(lang.tr('Major'),rowData['MAJOR'].toString(),14.0),
+                              _rowDisciplineType(lang.tr('Other'),rowData['OTHER'].toString(),14.0),
                               Container(
                                 alignment: Alignment.bottomRight,
                                 child: Text(lang.tr("Total")+" : "+rowData['TOTAL_ATTRECORD'].toString(),style: TextStyle(
@@ -251,7 +262,7 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
         )
     );
   }
-  Widget _rowTitleAttendance(String stringData,Image image, double fontSize){
+  Widget _rowTitleDiscipline(String stringData,Image image, double fontSize){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -266,7 +277,7 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
         ]
     );
   }
-  Widget _rowAttendanceType(String textData, String priceData,double fontSize){
+  Widget _rowDisciplineType(String textData, String priceData,double fontSize){
     return new Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.black26,width: 1.0))
@@ -296,6 +307,57 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
              ),
            )
           ]
+      ),
+    );
+  }
+  void _showTermDialog(BuildContext context){
+    DemoLocalization lang = DemoLocalization.of(context);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.all(0.0),
+          title: new Text(lang.tr("NOTE"),textAlign: TextAlign.center,style: TextStyle(fontSize: 14.0),),
+          content: Container(
+              height:MediaQuery.of(context).size.height*0.5,
+              width: MediaQuery.of(context).size.width*1,
+              child: Container(
+                child: ListView.builder (
+                    itemCount: disciplineNoteList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return  _termConditon(disciplineNoteList[index]);
+                    }
+                ),
+              )
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Widget _termConditon(rowData){
+    return Container(
+      padding: EdgeInsets.all(6.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Text(rowData['title'].toString(),style: TextStyle(fontSize: 14.0,fontFamily: 'Khmer',fontWeight: FontWeight.bold)),
+          Padding(
+            padding: EdgeInsets.only(left: 10.0),
+            child:Html(
+              data: rowData['description'].toString(),
+            )
+          )
+
+        ],
       ),
     );
   }

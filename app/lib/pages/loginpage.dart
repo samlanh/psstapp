@@ -265,7 +265,6 @@ class _LoginPageState extends State<LoginPage> {
        'mobileToken': 'asdkfwerqwer',
      };
     var response = await http.post(StringData.loginUrl,
-//        headers: {"Accept":"application/json"},
         body: data);
 
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -275,15 +274,16 @@ class _LoginPageState extends State<LoginPage> {
         if(jsonResponse['code'].toString()=='SUCCESS'){
           setState((){
             isLoading = false;
+            sharedPreferences.setString("token", jsonResponse['result']['id'].toString());
+            sharedPreferences.setString("studentId",  jsonResponse['result']['id'].toString());
+            sharedPreferences.setString("stuCode",  jsonResponse['result']['stuCode'].toString());
+            sharedPreferences.setString("stuNameKH",  jsonResponse['result']['stuNameKH'].toString());
+            sharedPreferences.setString("stuFirstName",  jsonResponse['result']['stuFirstName'].toString());
+            sharedPreferences.setString("stuLastName",  jsonResponse['result']['stuLastName'].toString());
+            sharedPreferences.setString("currentLang",currentLang);
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => HomeApp()), (Route<dynamic> route) => false);
           });
-           sharedPreferences.setString("token", jsonResponse['result']['id'].toString());
-           sharedPreferences.setString("studentId",  jsonResponse['result']['id'].toString());
-           sharedPreferences.setString("stuCode",  jsonResponse['result']['stuCode'].toString());
-           sharedPreferences.setString("stuNameKH",  jsonResponse['result']['stuNameKH'].toString());
-           sharedPreferences.setString("stuFirstName",  jsonResponse['result']['stuFirstName'].toString());
-           sharedPreferences.setString("stuLastName",  jsonResponse['result']['stuLastName'].toString());
-           sharedPreferences.setString("currentLang",currentLang);
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => HomeApp()), (Route<dynamic> route) => false);
+
         }else{//wrong password
           setState((){
             wrongLogin='Wrong User Name and Password';

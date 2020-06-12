@@ -1,7 +1,8 @@
 
 class StringData{
-  static String imageURL = 'http://192.168.1.7/psst/trunk/public/images';
-  static String mainUrl = 'http://192.168.1.7/psst/trunk/public/api/index';
+  static String imageURL = 'http://192.168.1.8/psst/trunk/public/images';
+  static String mainUrl = 'http://192.168.1.8/psst/trunk/public/api/index';
+//  static String mainUrl = 'http://192.168.1.7/psst/trunk/public/api/index';
   static String loginUrl = mainUrl + '?url=auth';
   static String paymentUrl = mainUrl + '?url=payment';
   static String paymentDetailUrl = mainUrl + '?url=paymentDetail';
@@ -18,4 +19,7 @@ class StringData{
   static String changePassword = mainUrl+'?url=changePassword';
   static String contactUs = mainUrl+'?url=contactus';
   static String eLearning = mainUrl+'?url=elearning';
+  static String eLearningVideo = mainUrl+'?url=elearningvideo';
+  static String downloadTranscript = mainUrl+'?url=transcriptpdf';
+  static String slieshow = mainUrl+'?url=slieshow';
 }
