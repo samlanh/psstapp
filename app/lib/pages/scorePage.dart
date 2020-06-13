@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:app/pages/scoreDetailPage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../url_api.dart';
 import 'package:app/localization/localization.dart';
+import 'package:app/pages/scoreDetailPage.dart';
 
 class ScorePage extends StatefulWidget {
+
   final studentId,currentLang;
   ScorePage({this.studentId,this.currentLang});
   @override
@@ -19,55 +20,56 @@ class _ScorePageState extends State<ScorePage> {
 
   @override
   void initState(){
-    // TODO: implement initState
-    super.initState();
     _getJsonScore();
+    super.initState();
+
   }
+
   @override
   Widget build(BuildContext context) {
     DemoLocalization lang = DemoLocalization.of(context);
     return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              centerTitle: true,
-              title: Row(
-                children: <Widget>[
-                  Image.asset('images/score.png',height: 50.0),
-                  SizedBox(width: 10.0),
-                  Text(lang.tr('Score'),
-                      style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontSize: 18.0,
-                          color: Colors.white)
-                  ),
-                ],
-              ),
-              flexibleSpace: Container(
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: <Color>[
-                          Color(0xff054798),
-                          Color(0xff009ccf),
-                        ])
-                ),
-              ),
-            ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        centerTitle: true,
+        title: Row(
+          children: <Widget>[
+            Image.asset('images/score.png',height: 50.0),
+            SizedBox(width: 10.0),
+            Text(lang.tr('Score'),
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontSize: 18.0,
+                color: Colors.white)
+            )
+          ]
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: <Color>[
+                Color(0xff054798),
+                Color(0xff009ccf),
+              ])
+          )
+        )
+      ),
       body: Column(
         children: <Widget>[
           Expanded(
             child:  Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: <Color>[
-                      Color(0xff054798),
-                      Color(0xff009ccf),
-                    ]
-                ),
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: <Color>[
+                    Color(0xff054798),
+                    Color(0xff009ccf)
+                  ]
+                )
               ),
               child: Container(
                 decoration: BoxDecoration(
@@ -75,29 +77,30 @@ class _ScorePageState extends State<ScorePage> {
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(40.0)),
                 ),
                 child: Padding(
-                    padding: EdgeInsets.only(top: 45.0,left:10.0,right: 10.0,bottom: 10.0),
-                    child: Container(
-                        height: MediaQuery.of(context).size.height,
-                        child: isLoading ? new Center(
-                            child: new CircularProgressIndicator()) :
-                            scoreList.isNotEmpty ? ListView.builder (
-                            itemCount: scoreList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return  _buildScoreItem(scoreList[index]);
-                            }
-                        ):Center(child:Text("No Result !"))
-                    )
+                  padding: EdgeInsets.only(top: 45.0,left:10.0,right: 10.0,bottom: 10.0),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: isLoading ? new Center(
+                      child: new CircularProgressIndicator()) :
+                      scoreList.isNotEmpty ? ListView.builder (
+                      itemCount: scoreList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return  _buildScoreItem(scoreList[index]);
+                      }
+                    ):Center(child:Text("No Result !"))
+                  )
                 )
               )
+            )
           )
-          )
-        ],
+        ]
       )
     );
   }
+
+
   _getJsonScore() async{
     final String urlApi = StringData.score+'&stu_id='+widget.studentId+'&currentLang='+widget.currentLang;
-//    debugPrint(urlApi.toString());
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState(() {
@@ -108,6 +111,8 @@ class _ScorePageState extends State<ScorePage> {
       });
     }
   }
+
+
   Widget rowSummerData(String strLabel,String strData){
      return Row(
        crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,10 +129,12 @@ class _ScorePageState extends State<ScorePage> {
        ]
      );
   }
+
+
   Widget _buildScoreItem(rowData) {
     DemoLocalization lang = DemoLocalization.of(context);
      return new Container(
-       margin: EdgeInsets.only(bottom: 10.0),
+        margin: EdgeInsets.only(bottom: 10.0),
         decoration: new BoxDecoration(
           color: Colors.white,
           border: Border(
@@ -155,10 +162,10 @@ class _ScorePageState extends State<ScorePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                  height: 110.0,
-                  padding: EdgeInsets.all(5.0),
-                  color: Color(0xff07548f),
-                  child: _rowTitleScore(rowData['for_month'],rowData['academicYear'].toString(),Image.asset("images/schedule.png",width:40.0),20.0),
+                height: 110.0,
+                padding: EdgeInsets.all(5.0),
+                color: Color(0xff07548f),
+                child: _rowTitleScore(rowData['for_month'],rowData['academicYear'].toString(),Image.asset("images/schedule.png",width:40.0),20.0),
               ),
               Expanded(
                 child: Padding(padding: EdgeInsets.only(left: 10.0),
@@ -183,12 +190,14 @@ class _ScorePageState extends State<ScorePage> {
                     ]
                   )
                 )
-              ),
-            ],
+              )
+            ]
           )
         )
     );
   }
+
+
   Widget _rowTitleScore(forMonth,year,Image image, double fontSize){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -207,11 +216,13 @@ class _ScorePageState extends State<ScorePage> {
             fontSize: 14.0,
             fontWeight: FontWeight.w600,
             color: Colors.white
-            ),
-          ),
+            )
+          )
         ]
     );
   }
+
+
   Widget _rowScoreType(String textData, String priceData,double fontSize){
     return new Container(
       decoration: BoxDecoration(
@@ -221,12 +232,11 @@ class _ScorePageState extends State<ScorePage> {
         children: [
            Expanded(
              child: Text(textData,style: TextStyle(
-                 fontFamily: 'Montserrat',
-                 fontSize: fontSize,
-                 fontWeight: FontWeight.w500,
-                 color: Color(0xff07548f).withOpacity(0.9)
+               fontFamily: 'Montserrat',
+               fontSize: fontSize,
+               fontWeight: FontWeight.w500,
+               color: Color(0xff07548f).withOpacity(0.9))
              )
-             ),
            ),
            Expanded(
              child:  Align(

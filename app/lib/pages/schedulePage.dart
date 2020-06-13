@@ -32,7 +32,6 @@ class _SchedulePageState extends State<SchedulePage> {
     strColor = colorArray[currentDate];
     dayNumber = dayNoArray[currentDate];
     _getJsonSchedule();
-    // TODO: implement initState
     super.initState();
   }
 

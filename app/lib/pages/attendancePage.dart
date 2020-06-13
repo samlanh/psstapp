@@ -229,6 +229,7 @@ class _AttendancePageState extends State<AttendancePage> {
         padding: EdgeInsets.only(right: 5.0),
         child: InkWell(
           onTap:(){
+            String forMonth = lang.tr(rowData['dateLabel'].toString());
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => AttendanceDetailPage(studentId:widget.studentId, currentLang:widget.currentLang,currentMonth:rowData['dateAttendence'],groupId:rowData['group_id'],rowData:rowData)
             ));
@@ -342,7 +343,6 @@ class _AttendancePageState extends State<AttendancePage> {
                 color: Colors.white,
                 border: Border(
                   top: BorderSide(width: 2.0, color:Colors.black26),
-//                  bottom: BorderSide(width: 2.0, color:Colors.black26),
                 ),
               ),
             child: Container(
