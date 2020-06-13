@@ -97,7 +97,15 @@ class _AttendancePageState extends State<AttendancePage> {
                       itemBuilder: (BuildContext context, int index) {
                         return  _buildAttendanceItem(attendanceList[index]);
                       }
-                    ):Center(child:Text("No Result !"))
+                    )
+                    : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          notFoundPage()
+                        ],
+                      ),
+                    )
                     )
                   )
                 )
@@ -229,7 +237,6 @@ class _AttendancePageState extends State<AttendancePage> {
         padding: EdgeInsets.only(right: 5.0),
         child: InkWell(
           onTap:(){
-            String forMonth = lang.tr(rowData['dateLabel'].toString());
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => AttendanceDetailPage(studentId:widget.studentId, currentLang:widget.currentLang,currentMonth:rowData['dateAttendence'],groupId:rowData['group_id'],rowData:rowData)
             ));

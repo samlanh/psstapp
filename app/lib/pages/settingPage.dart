@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:easy_localization/easy_localization.dart';
 import 'package:app/localization/localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -38,7 +37,7 @@ class _SettingPageState extends State<SettingPage> {
         elevation: 0.0,
         automaticallyImplyLeading: false,
         title: InkWell(
-          child: Text("Cancel",style:TextStyle(fontSize: 18.0)),
+          child: Text(lang.tr("Cancel"),style:TextStyle(fontSize: 18.0)),
           onTap: (){
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => HomeApp()), (Route<dynamic> route) => false);
           },
@@ -69,80 +68,79 @@ class _SettingPageState extends State<SettingPage> {
             ),
           ),
             child: isLoading ? new Stack(alignment: AlignmentDirectional.center,
-                children: <Widget>[new CircularProgressIndicator()]): Stack(
+              children: <Widget>[new CircularProgressIndicator()]): Stack(
               alignment: Alignment.center,
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Container(
-                      height: 75.0,
+              Column(
+                children: <Widget>[
+                  Container(
+                    height: 75.0,
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(top: 70.0,),
+                    decoration: new BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: new BorderRadius.vertical(top: new Radius.elliptical(MediaQuery.of(context).size.width, 100.0)),
                     ),
-                    Container(
-                      padding: EdgeInsets.only(top: 70.0,),
-                      decoration: new BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: new BorderRadius.vertical(top: new Radius.elliptical(MediaQuery.of(context).size.width, 100.0)),
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          rowStudentTitle(Icon(Icons.person_outline,color: Color(0xff07548f)),lang.tr("STUDENT_INFO")),
-                          rowStudentData(lang.tr("STUDENT_ID"), rsProfileList[0]['stu_code'].toString()),
-                          rowStudentData(lang.tr("NAME_IN_KHMER"),rsProfileList[0]['stu_khname'].toString()),
-                          rowStudentData(lang.tr("NAME_IN_LATIN"), rsProfileList[0]['name_englsih'].toString()),
-                          rowStudentData(lang.tr("GENDER"),  rsProfileList[0]['genderTitle'].toString()),
-                          rowStudentTitle(Icon(Icons.format_align_center,color: Color(0xff07548f)),lang.tr("ភាសា")),
-                          rowStudentData(lang.tr("ភាសា"),"ខ្មែរ"),
-                          rowStudentData(lang.tr("ភាសា"),"ខ្មែរ"),
-                          Container(
-                            padding: EdgeInsets.all(10.0),
-                            child: MaterialButton(
-                              height: 60.0,
-                              minWidth:MediaQuery.of(context).size.width,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(25),
-                                ),
+                    child: Column(
+                      children: <Widget>[
+                        rowStudentTitle(Icon(Icons.person_outline,color: Color(0xff07548f)),lang.tr("STUDENT_INFO")),
+                        rowStudentData(lang.tr("STUDENT_ID"), rsProfileList[0]['stu_code'].toString()),
+                        rowStudentData(lang.tr("NAME_IN_KHMER"),rsProfileList[0]['stu_khname'].toString()),
+                        rowStudentData(lang.tr("NAME_IN_LATIN"), rsProfileList[0]['name_englsih'].toString()),
+                        rowStudentData(lang.tr("GENDER"),  rsProfileList[0]['genderTitle'].toString()),
+                        rowStudentTitle(Icon(Icons.format_align_center,color: Color(0xff07548f)),lang.tr("ភាសា")),
+                        Container(
+                          padding: EdgeInsets.all(10.0),
+                          child: MaterialButton(
+                            height: 60.0,
+                            minWidth:MediaQuery.of(context).size.width,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25),
                               ),
-                              color:Color(0xff19a3b7),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: <Widget>[
-                                  Text(lang.tr("CHANGE_PASSWORD"),
-                                    style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,
-                                        fontSize: 18.0
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: FractionalOffset.centerRight,
-                                    child: Icon(Icons.arrow_forward_ios,color: Colors.white,size: 28.0),
-                                  )
-                                ],
-                              ),
-                              onPressed:(){
-                                Navigator.push(context,MaterialPageRoute(builder: (context) => ChangePassword(studentId: widget.studentId,currentLang:widget.currentLang)));
-                              }
                             ),
-                          )
-                        ],
-                      )
+                            color:Color(0xff19a3b7),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: <Widget>[
+                                Text(lang.tr("CHANGE_PASSWORD"),
+                                  style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,
+                                      fontSize: 18.0
+                                  ),
+                                ),
+                                Container(
+                                  alignment: FractionalOffset.centerRight,
+                                  child: Icon(Icons.arrow_forward_ios,color: Colors.white,size: 28.0),
+                                )
+                              ],
+                            ),
+                            onPressed:(){
+                              Navigator.push(context,MaterialPageRoute(builder: (context) => ChangePassword(studentId: widget.studentId,currentLang:widget.currentLang)));
+                            }
+                          ),
+                        )
+                      ],
                     )
-                  ],
-                ),
-                Positioned(
-                  top: 15.0,
-                  child: Container(
-                    height: 120.0,
-                    width: 120.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color:Color(0xff009ccf),width: 4.0),
-                      image: DecorationImage(
-                        image: AssetImage('images/student1.jpg'),
-                        fit: BoxFit.cover,
-                      ),
+                  )
+                ],
+              ),
+              Positioned(
+                top: 15.0,
+                child: Container(
+                  height: 120.0,
+                  width: 120.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color:Color(0xff009ccf),width: 4.0),
+                    image: DecorationImage(
+                        image: rsProfileList[0]['photo'].toString() ==''? AssetImage('images/studentprofile.png'):
+                        NetworkImage(StringData.imageURL+'/photo/'+rsProfileList[0]['photo'].toString()),
+                        fit: BoxFit.fill
                     ),
                   ),
-                )
+                ),
+              )
               ],
             ),
           )
@@ -150,6 +148,8 @@ class _SettingPageState extends State<SettingPage> {
       )
     );
   }
+
+
   Widget rowStudentTitle(Icon icon,labelValue){
     return Container(
       padding: EdgeInsets.all(7.0),
@@ -173,6 +173,8 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
+
+
   _getJsonProfile() async{
     final String urlApi = StringData.studentProfile+'&stu_id='+widget.studentId+'&currentLang='+widget.currentLang;
     http.Response rawData = await http.get(urlApi);
@@ -185,6 +187,7 @@ class _SettingPageState extends State<SettingPage> {
       });
     }
   }
+
 
   Widget rowStudentData(String labelData,labelValue){
     return Container(
@@ -203,7 +206,7 @@ class _SettingPageState extends State<SettingPage> {
               child: Text(labelValue,style: TextStyle(color: Color(0xff092952))),
             )
           )
-        ],
+        ]
       )
     );
   }

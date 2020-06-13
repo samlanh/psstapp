@@ -120,12 +120,20 @@ class _SchedulePageState extends State<SchedulePage> {
              child: Container(
                padding: EdgeInsets.all(10.0),
                  child:isLoading ? new Stack(alignment: AlignmentDirectional.center,
-                 children: <Widget>[new CircularProgressIndicator()]) :  new ListView.builder (
+                 children: <Widget>[new CircularProgressIndicator()]) :
+                 scheduleList.isNotEmpty ?  new ListView.builder (
                    itemCount: scheduleList.length,
                    itemBuilder: (BuildContext context, int index) {
                      return  _buildScheduleItem(scheduleList[index]);
                    }
-                 )
+                 ): Center(
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      notFoundPage()
+                    ],
+                  ),
+                )
                 )
              )
            ]

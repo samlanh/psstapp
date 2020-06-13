@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:easy_localization/easy_localization.dart';
 import 'package:app/localization/localization.dart';
 import 'package:app/pages/settingPage.dart';
 
@@ -16,21 +15,14 @@ class _SuccessPageState extends State<SuccessPage> {
   String wrongLogin='';
   var jsonResponse ;
 
-  @override
-  void initState(){
-    super.initState();
-//    checkLoginedStatus();
-  }
 
   final TextEditingController currentPasswordController = new TextEditingController();
   final TextEditingController reTypePasswordController = new TextEditingController();
   final TextEditingController newPasswordController = new TextEditingController();
-  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     DemoLocalization lang = DemoLocalization.of(context);
-    String strLang = Localizations.localeOf(context).languageCode;
 
     return  Scaffold(
         resizeToAvoidBottomPadding: false,
@@ -69,7 +61,7 @@ class _SuccessPageState extends State<SuccessPage> {
                                 )),
                           ),
                           SizedBox(height: 15.0),
-                          new Text(lang.tr('Changed Success!'),
+                          new Text(lang.tr('Changed Success'),
                               style: new TextStyle(
                                   fontSize: 16.0,
                                   color: Colors.white.withOpacity(0.9),
@@ -78,7 +70,7 @@ class _SuccessPageState extends State<SuccessPage> {
                               )),
                           SizedBox(height:100.0),
                           InkWell(
-                            child: Text('Go Back',
+                            child: Text(lang.tr('Go Back'),
                                 style: new TextStyle(
                                     fontSize: 25.0,
                                     color: Colors.white70.withOpacity(0.9),

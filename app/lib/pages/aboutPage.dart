@@ -1,20 +1,17 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-//import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:app/localization/localization.dart';
 import '../url_api.dart';
-//import 'package:flutter_html_textview_render/html_text_view.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'dart:developer';
-import 'package:app/localization/localization.dart';
 
-
+//import 'package:google_maps_flutter/google_maps_flutter.dart';
+//import 'package:flutter_html_textview_render/html_text_view.dart';
 
 class AboutPage extends StatefulWidget{
-//  final String studentId;
   final String currentLang;
   AboutPage({this.currentLang});
   @override
@@ -28,7 +25,6 @@ class _AboutPageState extends State<AboutPage> {
   List aboutList = new List();
   List contactList = new List();
   bool isLoading = true;
-
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   YoutubePlayerController _controller;
@@ -46,14 +42,11 @@ class _AboutPageState extends State<AboutPage> {
     'LxakMi-jzoM',
     '8U4rZBEfmz0',
     'Pfog_f4gric',
-
   ];
 
   @override
   void initState(){
-
     _getJsonContact();
-
     _controller = YoutubePlayerController(
       initialVideoId: _ids.first,
       flags: const YoutubePlayerFlags(
@@ -72,6 +65,7 @@ class _AboutPageState extends State<AboutPage> {
     _playerState = PlayerState.unknown;
     super.initState();
   }
+
   void listener() {
     if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
       setState(() {
@@ -83,7 +77,6 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   void deactivate() {
-    // Pauses video while navigating to next page.
     _controller.pause();
     super.deactivate();
   }
@@ -111,137 +104,118 @@ class _AboutPageState extends State<AboutPage> {
   }
 
 
-//  Widget Button(Function function, IconData icon){
-//    return FloatingActionButton(
-//      onPressed: function,
-//      materialTapTargetSize: MaterialTapTargetSize.padded,
-//      backgroundColor: Colors.blue,
-//      child: Icon(icon,size: 35.0),
-//    );
-//
-//  }
-
-
   @override
   Widget build(BuildContext context) {
+    DemoLocalization lang = DemoLocalization.of(context);
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 0.0,
-          title: Row(
-            children: <Widget>[
-//              Image.asset('images/about.png',height: 50.0),
-              Icon(Icons.person_pin,size: 30.0),
-              SizedBox(width: 5.0,),
-              Text("About"),
-            ],
-          ),
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: <Color>[
-                      Color(0xff054798),
-                      Color(0xff009ccf),
-                    ]
-                )
-            ),
-          ),
-        ),
-        body: new PageView(
-          controller: _pageController,
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 0.0,
+        title: Row(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.all(10.0),
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: <BoxShadow>[
-                  new BoxShadow (
-                    color: Colors.lightBlue.withOpacity(0.2),
-                    offset: new Offset(0.0, 2.0),
-                    blurRadius: 20.0,
-                  ),
-                ],
-              ),
-              child:aboutList.isNotEmpty ?
-              isLoading ? new Stack(alignment: AlignmentDirectional.center,
-                  children: <Widget>[new CircularProgressIndicator()]) : ListView.builder (
-                  itemCount: aboutList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return  aboutUs(aboutList[index]);
-                  }
-              ):Center(child:Text("No Result !")),
-            ),
-
-            Container(
-              margin: EdgeInsets.all(10.0),
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: <BoxShadow>[
-                  new BoxShadow (
-                    color: Colors.lightBlue.withOpacity(0.2),
-                    offset: new Offset(0.0, 2.0),
-                    blurRadius: 20.0,
-                  ),
-                ],
-              ),
-              child:contactList.isNotEmpty ? isLoading ? new Stack(alignment: AlignmentDirectional.center,
-                  children: <Widget>[new CircularProgressIndicator()]) : ListView.builder (
-                  itemCount: contactList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return  contactAddress(contactList[index]);
-                  }
-              ):Center(child:Text("No Result !")),
-            ),
-
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.red,
-                boxShadow: <BoxShadow>[
-                  new BoxShadow (
-                    color: Colors.lightBlue.withOpacity(0.2),
-                    offset: new Offset(0.0, 2.0),
-                    blurRadius: 20.0,
-                  ),
-                ],
-              ),
-              child: videoPageview(),
-              )
-
-
+            Icon(Icons.person_pin,size: 30.0),
+            SizedBox(width: 5.0,),
+            Text(lang.tr("About us")),
           ],
         ),
-
-
-            bottomNavigationBar: new BottomNavigationBar(
-                items: [
-                  new BottomNavigationBarItem(icon: new Icon(Icons.person_pin), title: new Text("About us",
-                    style: TextStyle(fontSize:16.0,fontWeight: FontWeight.bold))),
-                  new BottomNavigationBarItem(icon: new Icon(Icons.location_on), title: new Text("Contact us",
-                      style: TextStyle(fontSize:16.0,fontWeight: FontWeight.bold))),
-                  new BottomNavigationBarItem(icon: new Icon(Icons.play_circle_outline), title: new Text("Video",
-                      style: TextStyle(fontSize:16.0,fontWeight: FontWeight.bold))),
-                ],
-                onTap: navigatePage,
-                currentIndex: page,
-                type: BottomNavigationBarType.fixed,
-//                backgroundColor: Decoration(
-//                  BoxDecoration(
-//                      gradient: LinearGradient(
-//                          begin: Alignment.centerLeft,
-//                          end: Alignment.centerRight,
-//                          colors: <Color>[
-//                            Color(0xff054798),
-//                            Color(0xff009ccf),
-//                          ])
-//                  ),
-//                ),
-
-//                fixedColor: const Color(0xff00c9d2),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: <Color>[
+                Color(0xff054798),
+                Color(0xff009ccf),
+              ]
             )
+          ),
+        ),
+      ),
+      body: new PageView(
+        controller: _pageController,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: <BoxShadow>[
+                new BoxShadow (
+                  color: Colors.lightBlue.withOpacity(0.2),
+                  offset: new Offset(0.0, 2.0),
+                  blurRadius: 20.0,
+                ),
+              ],
+            ),
+            child:Column(
+              children: <Widget>[
+                Container(
+                  child:Image.asset('images/schoollogo.png',width: 120)
+                ),
+                Expanded(
+                  child: aboutList.isNotEmpty ?
+                  isLoading ? new Stack(alignment: AlignmentDirectional.center,
+                      children: <Widget>[new CircularProgressIndicator()]) : ListView.builder (
+                      itemCount: aboutList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return  aboutUs(aboutList[index]);
+                      }
+                  ):Center(child:Text("No Result !")
+                  ),
+                )
+              ],
+            )
+          ),
+          Container(
+            margin: EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: <BoxShadow>[
+                new BoxShadow (
+                  color: Colors.lightBlue.withOpacity(0.2),
+                  offset: new Offset(0.0, 2.0),
+                  blurRadius: 20.0,
+                ),
+              ],
+            ),
+            child:contactList.isNotEmpty ? isLoading ? new Stack(alignment: AlignmentDirectional.center,
+                children: <Widget>[new CircularProgressIndicator()]) : ListView.builder (
+                itemCount: contactList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return  contactAddress(contactList[index]);
+                }
+            ):Center(child:Text("No Result !")),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.red,
+              boxShadow: <BoxShadow>[
+                new BoxShadow (
+                  color: Colors.lightBlue.withOpacity(0.2),
+                  offset: new Offset(0.0, 2.0),
+                  blurRadius: 20.0,
+                ),
+              ],
+            ),
+            child: videoPageview(),
+          )
+        ],
+        ),
+        bottomNavigationBar: new BottomNavigationBar(
+
+          items: [
+            new BottomNavigationBarItem(icon: new Icon(Icons.person_pin), title: new Text(lang.tr("About us"),
+              style: TextStyle(fontSize:16.0,fontWeight: FontWeight.bold))),
+            new BottomNavigationBarItem(icon: new Icon(Icons.location_on), title: new Text(lang.tr("Contact us"),
+                style: TextStyle(fontSize:16.0,fontWeight: FontWeight.bold))),
+            new BottomNavigationBarItem(icon: new Icon(Icons.play_circle_outline), title: new Text(lang.tr("Videos"),
+                style: TextStyle(fontSize:16.0,fontWeight: FontWeight.bold))),
+          ],
+          onTap: navigatePage,
+          currentIndex: page,
+          type: BottomNavigationBarType.fixed,
+        )
 
 //            Container(
 //                      margin: EdgeInsets.all(10.0),
@@ -277,10 +251,7 @@ class _AboutPageState extends State<AboutPage> {
 //                  ],
 //                ),
 //              ),
-//
 //            ),
-
-
 //          ],
 //        )
 //        Container(
@@ -376,8 +347,6 @@ class _AboutPageState extends State<AboutPage> {
 
   Widget aboutUs(dataRow){
     return Container(
-//      padding: EdgeInsets.only(left: 5.0),
-//      margin: EdgeInsets.only(left: 5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -468,7 +437,7 @@ class _AboutPageState extends State<AboutPage> {
                             await launch(dataRow['instagram'].toString());
                           }
                         },
-                        child: Image.asset('images/instagram.png',fit: BoxFit.cover,)
+                        child: Image.asset('images/telegram.png',fit: BoxFit.cover,)
                     )
                 ),
                 SizedBox(width: 10.0),
@@ -643,7 +612,6 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
   Widget videoPageview(){
-    DemoLocalization lang = DemoLocalization.of(context);
     return YoutubePlayerBuilder(
       player: YoutubePlayer(
         controller: _controller,
@@ -667,9 +635,6 @@ class _AboutPageState extends State<AboutPage> {
               color: Colors.white,
               size: 25.0,
             ),
-            onPressed: () {
-              log('Settings Tapped!');
-            },
           ),
         ],
         onReady: () {
@@ -804,7 +769,6 @@ class _AboutPageState extends State<AboutPage> {
                 Container(
                   child: _text("", _videoMetaData.title),
                 ),
-
                 Expanded(
                   flex: 1,
                   child: Container(
@@ -882,7 +846,7 @@ class _AboutPageState extends State<AboutPage> {
           if (action == 'PLAY') _controller.load(id);
           FocusScope.of(context).requestFocus(FocusNode());
         }
-            : null,
+        : null,
         disabledColor: Colors.grey,
         disabledTextColor: Colors.black,
         child: Padding(

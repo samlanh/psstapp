@@ -87,7 +87,15 @@ class _ScorePageState extends State<ScorePage> {
                       itemBuilder: (BuildContext context, int index) {
                         return  _buildScoreItem(scoreList[index]);
                       }
-                    ):Center(child:Text("No Result !"))
+                    )
+                    :Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          notFoundPage()
+                        ],
+                      ),
+                     )
                   )
                 )
               )

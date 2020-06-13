@@ -140,6 +140,7 @@ class _HomeAppState extends State<HomeApp> {
   List grideList = getGride();
   String studentName='';
   String stuCode='';
+  String photo='';
   String studentId='';
   String title='';
   String currentLang = '1';
@@ -160,6 +161,7 @@ class _HomeAppState extends State<HomeApp> {
       studentName = sharedPreferences.getString('stuNameKH');
       stuCode = sharedPreferences.getString('stuCode');
       studentId = sharedPreferences.getString('studentId');
+      photo = sharedPreferences.getString('photo');
       currentLang = (Localizations.localeOf(context).languageCode == "km")?'1':'2';//sharedPreferences.getString('currentLang');
     }
   }
@@ -351,7 +353,9 @@ class _HomeAppState extends State<HomeApp> {
                       child: Hero(
                           tag: "hero",
                           child: CircleAvatar(
-                            backgroundImage: AssetImage('images/student1.jpg'),
+                            backgroundImage: photo!='' ?
+                              NetworkImage(StringData.imageURL+'/photo/'+photo)
+                              :AssetImage('images/studentprofile.png')
                           )),
                     ) ,
                     InkWell(
@@ -408,7 +412,7 @@ class _HomeAppState extends State<HomeApp> {
                     InkWell(
                       child:Align(
                         alignment: FractionalOffset.center,
-                        child:  Text("Log out",style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold),),
+                        child:  Text(lang.tr("Log out"),style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold),),
                       ),
                       onTap:(){
                         singOutUser();
@@ -481,9 +485,9 @@ class _HomeAppState extends State<HomeApp> {
         onTap: (){
           var router = new MaterialPageRoute(builder: (context){
             if(index==0){
-              return PaymentPage(studentId: studentId,currentLang:currentLang);
+              return PaymentPage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
             }else if(index==1){
-              return new SchedulePage(studentId: studentId,currentLang:currentLang);
+              return new SchedulePage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
             }else if(index==2){
               return new AttendancePage(studentId: studentId,currentLang:currentLang);
             }else if(index==3){
