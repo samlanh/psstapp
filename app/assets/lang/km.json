@@ -12,6 +12,7 @@
   "Discipline":"កិច្ចការ វិន័យ",
   "Study History":"រៀនអនឡាញ",
   "News & Event":"ព័ត៌មាន/ព្រឹត្តិការណ៍",
+  "News":"ព័ត៌មាន",
   "About us":"អំពីយើង",
   "Welcome":"សូមស្វាគមន៍",
   "NAME_IN_KHMER":"នាម-គោត្តនាម",
@@ -121,7 +122,8 @@
   "Cancel":"បោះបង់",
   "Changed Success":"ការផ្លាស់ប្តូរដោយជោគជ័យ",
   "Log out":"ចាកចេញ",
+  "CHECK_INTERNET_CONNECTION":"សូមតភ្ជាប់អ៊ីនធ័រណែត!",
+  "COURSE":"កម្មវិធីសិក្សា",
+  "Calendar":"ប្រតិទិន",
   "Go Back":"ទៅទំព័រដើម"
-
-
 }
