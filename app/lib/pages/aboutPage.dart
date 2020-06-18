@@ -6,7 +6,7 @@ import 'package:app/localization/localization.dart';
 import '../url_api.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'dart:developer';
+//import 'dart:developer';
 
 //import 'package:google_maps_flutter/google_maps_flutter.dart';
 //import 'package:flutter_html_textview_render/html_text_view.dart';
@@ -407,25 +407,25 @@ class _AboutPageState extends State<AboutPage> {
                 Expanded(
                     flex: 1,
                     child: GestureDetector(
-                      child: circelContact(Color(0xff3c5a99),"f",Icon(Icons.contact_mail),1),
-                      onTap: () async{
-                        if (await canLaunch(dataRow['facebook'].toString())) {
-                          await launch(dataRow['facebook'].toString());
+                        child: circelContact(Color(0xff11cf31),"",Icon(Icons.call,color: Colors.white,size: 40.0),2),
+                        onTap: () async{
+                          if (await canLaunch("tel://"+dataRow['phone'].toString())) {//"tel://+85570418002"
+                            await launch("tel://"+dataRow['phone'].toString());
+                          }
                         }
-                      },
                     )
                 ),
                 SizedBox(width: 10.0),
                 Expanded(
                     flex: 1,
                     child: GestureDetector(
-                        onTap: () async{
-                          if (await canLaunch(dataRow['youtube'].toString())) {
-                            await launch(dataRow['youtube'].toString());
-                          }
-                        },
-                        child: Image.asset('images/youtube.png',fit: BoxFit.cover,)
-                      //circelContact(Color(0xffff3d01),"",Icon(Icons.youtube_searched_for,color: Colors.white,size: 40.0),2),
+                      child: Image.asset(
+                          'images/facebook.png', fit: BoxFit.fill),
+                      onTap: () async{
+                        if (await canLaunch(dataRow['facebook'].toString())) {
+                          await launch(dataRow['facebook'].toString());
+                        }
+                      },
                     )
                 ),
                 SizedBox(width: 10.0),
@@ -444,14 +444,18 @@ class _AboutPageState extends State<AboutPage> {
                 Expanded(
                     flex: 1,
                     child: GestureDetector(
-                      child: circelContact(Color(0xff11cf31),"",Icon(Icons.call,color: Colors.white,size: 40.0),2),
-                      onTap: () async{
-                        if (await canLaunch("tel://"+dataRow['phone'].toString())) {//"tel://+85570418002"
-                          await launch("tel://"+dataRow['phone'].toString());
-                        }
-                      }
+                        onTap: () async{
+                          if (await canLaunch(dataRow['youtube'].toString())) {
+                            await launch(dataRow['youtube'].toString());
+                          }
+                        },
+                        child: Image.asset('images/youtube.png',fit: BoxFit.cover,)
+                      //circelContact(Color(0xffff3d01),"",Icon(Icons.youtube_searched_for,color: Colors.white,size: 40.0),2),
                     )
                 ),
+
+
+
               ],
             )
           )
@@ -459,6 +463,7 @@ class _AboutPageState extends State<AboutPage> {
       ),
     );
   }
+
   Widget rowAbout(Icon icon,String textLabel,int type){
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,

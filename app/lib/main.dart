@@ -11,24 +11,26 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:app/pages/paymentPage.dart';
 import 'package:app/pages/schedulePage.dart';
 import 'package:app/localization/localization_constands.dart';
-
-
 import 'package:app/pages/profilePage.dart';
 import 'package:app/pages/settingPage.dart';
 import 'package:app/pages/valuationPage.dart';
 import 'package:app/pages/newsPage.dart';
 import 'package:app/pages/aboutPage.dart';
+import 'package:app/pages/calendarPage.dart';
 import 'package:app/pages/attendancePage.dart';
 import 'package:app/pages/disciplinePage.dart';
 import 'package:app/pages/scorePage.dart';
 import 'package:app/pages/notification.dart';
 import 'package:app/pages/learningPage.dart';
+import 'package:app/pages/frontPage.dart';
 //import 'package:app/pages/contactPage.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'url_api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:connectivity/connectivity.dart';
 
 
 void main() {
@@ -41,21 +43,27 @@ void main() {
 }
 
 class MyApp extends StatefulWidget{
+
   void setLocale(BuildContext context,Locale locale){
     _MyAppState state = context.findAncestorStateOfType<_MyAppState>();
     state.setLocale(locale);
   }
+
   @override
   _MyAppState createState()=>_MyAppState();
 }
 
 class _MyAppState extends State<MyApp>{
+
+
   Locale _locale;
+  SharedPreferences sharedPreferences;
   void setLocale(Locale locale){
     setState(() {
       _locale = locale;
     });
   }
+
   @override
   void didChangeDependencies(){
     getLocale().then((locale){
@@ -66,8 +74,27 @@ class _MyAppState extends State<MyApp>{
     super.didChangeDependencies();
   }
 
+  bool isLogin=false;
+
   @override
-  Widget build(BuildContext context) {
+  void initState(){
+    super.initState();
+    checkLoginStatus();
+  }
+
+  checkLoginStatus() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    if(sharedPreferences.getString('token') != null) {
+      setState(() {
+        isLogin=true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context)  {
+
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -82,7 +109,6 @@ class _MyAppState extends State<MyApp>{
     }else{
       return MaterialApp(
           debugShowCheckedModeBanner: false,
-//          title: 'Welcome to Mobile App',
           locale: _locale,
           supportedLocales: [
             Locale('en', 'US'),
@@ -98,9 +124,9 @@ class _MyAppState extends State<MyApp>{
             return locale;
           },
           home: new SplashScreen(
-            seconds:3,
-            navigateAfterSeconds: new HomeApp(),//HomeApp(),//LoginPage()
-            title: new Text('',),
+            seconds:1,
+            navigateAfterSeconds: isLogin ? new HomeApp(): new FrontPage(currentLang:'1'),//HomeApp(),//LoginPage()//if login home:FrontPage
+            title: new Text('PSIS',),
             image: new Image.asset('images/schoollogo.png',width: 120),
             gradientBackground:  LinearGradient(
               begin: FractionalOffset.topCenter,
@@ -118,12 +144,14 @@ class _MyAppState extends State<MyApp>{
             ),
             styleTextUnderTheLoader: new TextStyle(),
             photoSize: 100.0,
-//            loaderColor: Colors.red,
           )
       );
     }
   }
 }
+
+
+
 class HomeApp extends StatefulWidget {
   @override
   _HomeAppState createState() => _HomeAppState();
@@ -147,22 +175,51 @@ class _HomeAppState extends State<HomeApp> {
   List sliderList = new List();
   bool isLoading = true;
   List<NetworkImage> imagesList = List<NetworkImage>();
+
+  bool connectResult = true;
+
+
   @override
   void initState() {
+    checkInternetStatus();
     checkLoginStatus();
     _getSlider();
     super.initState();
   }
+
+  void checkInternetStatus() {
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.mobile ||
+          result == ConnectivityResult.wifi) {
+        setState(() {
+          connectResult = true;
+        });
+      } else {
+        setState(() {
+          connectResult = false;
+        });
+      }
+    });
+  }
+//  void ChangeValues(String resultval) {
+//    setState(() {
+//      connectResult = resultval;
+//
+//    });
+//  }
+
   checkLoginStatus() async {
     sharedPreferences = await SharedPreferences.getInstance();
+    currentLang = (Localizations.localeOf(context).languageCode == "km")?'1':'2';
     if(sharedPreferences.getString('token') == null) {
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => LoginPage()), (Route<dynamic> route) => false);
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => FrontPage(currentLang:currentLang)), (Route<dynamic> route) => false);
+//      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => LoginPage()), (Route<dynamic> route) => false);
     }else{
       studentName = sharedPreferences.getString('stuNameKH');
       stuCode = sharedPreferences.getString('stuCode');
       studentId = sharedPreferences.getString('studentId');
       photo = sharedPreferences.getString('photo');
-      currentLang = (Localizations.localeOf(context).languageCode == "km")?'1':'2';//sharedPreferences.getString('currentLang');
+     //sharedPreferences.getString('currentLang');
     }
   }
   _getSlider() async{
@@ -181,7 +238,7 @@ class _HomeAppState extends State<HomeApp> {
     }
   }
 
-  Widget sliderContence(){
+  Widget sliderContainer(){
     return SizedBox(
         height: 200.0,
         width: MediaQuery.of(context).size.width,
@@ -257,7 +314,7 @@ class _HomeAppState extends State<HomeApp> {
                     ],
                   ),
                   child: isLoading ? new Stack(alignment: AlignmentDirectional.center,
-                      children: <Widget>[new CircularProgressIndicator()]) : sliderContence()//sliderContence()
+                      children: <Widget>[new CircularProgressIndicator()]) : sliderContainer()//sliderContence()
                 ),
                 Expanded(
                   flex:4,
@@ -281,10 +338,14 @@ class _HomeAppState extends State<HomeApp> {
                           ),
                           itemCount: grideList.length,
                           itemBuilder: (BuildContext context ,int index){
-                            return new InkWell(
+                            return InkWell(
                               child: myGridMenu(context, index),
                               onTap: (){
-                                routerAntherPage(index);
+                                if(connectResult==true) {
+                                  routerAntherPage(index);
+                                }else{
+                                   return _showDialog();
+                                }
                               },
                             );
                           },
@@ -299,32 +360,79 @@ class _HomeAppState extends State<HomeApp> {
     );
 
   }
+  void _showDialog() {
+    DemoLocalization lang = DemoLocalization.of(context);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+          elevation: 0,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 10,
+            ),
+            child: IntrinsicWidth(
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(lang.tr("CHECK_INTERNET_CONNECTION"),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("OK"),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
   void routerAntherPage(index){
-    //Navigator.push(context, MaterialPageRoute(builder:(context){
-      var router = new MaterialPageRoute(builder: (context){
-//      return PaymentPage(studentId: studentId,currentLang:currentLang);
-      if(index==0){
-        return PaymentPage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
-      }else if(index==1){
-        return new SchedulePage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
-      }else if(index==2){
-        return new AttendancePage(studentId: studentId,currentLang:currentLang);
-      }else if(index==3){
-        return new ScorePage(studentId: studentId,currentLang:currentLang);
-      }else if(index==4){
-        return new DisciplinePagePage(studentId: studentId,currentLang:currentLang);
-      }else if(index==5){
-        return new ValuationPage();
-      }else if(index==6){
-        return new LearningPage(studentId: studentId,currentLang:currentLang);
-      }else if(index==7){
-        return new NewsEventPage(currentLang:currentLang);
-      }else if(index==8){
-        return new AboutPage(currentLang:currentLang);
-      }
 
-    });
-    Navigator.of(context).push(router);
+      var router = new MaterialPageRoute(builder: (context){
+        if(index==0){
+          return CoursePage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
+        }else if(index==1){
+          return new SchedulePage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
+        }else if(index==2){
+          return new AttendancePage(studentId: studentId,currentLang:currentLang);
+        }else if(index==3){
+          return new ScorePage(studentId: studentId,currentLang:currentLang);
+        }else if(index==4){
+          return new DisciplinePagePage(studentId: studentId,currentLang:currentLang);
+        }else if(index==5){
+          return new CalendarPage(currentLang:currentLang);
+        }else if(index==6){
+          return new LearningPage(studentId: studentId,currentLang:currentLang);
+        }else if(index==7){
+          return new NewsEventPage(currentLang:currentLang);
+        }else if(index==8){
+          return new AboutPage(currentLang:currentLang);
+        }
+      });
+      Navigator.of(context).push(router);
   }
   Drawer leftMenu(BuildContext context){
 
@@ -453,7 +561,7 @@ class _HomeAppState extends State<HomeApp> {
   }
   singOutUser(){
     sharedPreferences.clear();
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => LoginPage()), (Route<dynamic> route) => false);
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => FrontPage()), (Route<dynamic> route) => false);
   }
   static List<MyGrideView> getGride(){
     var gridList = new List<MyGrideView>();
@@ -462,7 +570,7 @@ class _HomeAppState extends State<HomeApp> {
     gridList.add(new MyGrideView(("Attendance"), "Installment Management System", "images/attendance.png"));
     gridList.add(new MyGrideView(("Score"), "Enrollment Management System",  "images/score.png"));
     gridList.add(new MyGrideView(("Discipline"), "Enrollment Management System",  "images/studenthistory.png"));
-    gridList.add(new MyGrideView(("Evaluation"), "Enrollment Management System",  "images/evaluation.png"));
+    gridList.add(new MyGrideView(("Calendar"), "Enrollment Management System",  "images/schedule.png"));
     gridList.add(new MyGrideView(("Study History"), "Installment Management System", "images/elearning.png"));
     gridList.add(new MyGrideView(("News & Event"), "Enrollment Management System",  "images/news.png"));
     gridList.add(new MyGrideView(("About us"), "Installment Management System", "images/about.png"));
@@ -483,28 +591,35 @@ class _HomeAppState extends State<HomeApp> {
           ],
         ),
         onTap: (){
-          var router = new MaterialPageRoute(builder: (context){
-            if(index==0){
-              return PaymentPage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
-            }else if(index==1){
-              return new SchedulePage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
-            }else if(index==2){
-              return new AttendancePage(studentId: studentId,currentLang:currentLang);
-            }else if(index==3){
-              return new ScorePage(studentId: studentId,currentLang:currentLang);
-            }else if(index==4){
-              return new DisciplinePagePage(studentId: studentId,currentLang:currentLang);
-            }else if(index==5){
-              return new ValuationPage();
-            }else if(index==6){
-              return new NewsEventPage(currentLang:currentLang);
-            }else if(index==7){
-              return new AboutPage(currentLang:currentLang);
-            }else if(index==8){
-              return new SettingPage(studentId: studentId,currentLang:currentLang);
-            }
-          });
-          Navigator.of(context).push(router);
+          if(connectResult==true) {
+            var router = new MaterialPageRoute(builder: (context){
+              if(index==0){
+                return CoursePage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
+              }else if(index==1){
+                return new SchedulePage(title:grideList[index].name,studentId: studentId,currentLang:currentLang);
+              // ignore: missing_return
+              }else if(index==2){
+                return new AttendancePage(studentId: studentId,currentLang:currentLang);
+              }else if(index==3){
+                return new ScorePage(studentId: studentId,currentLang:currentLang);
+              }else if(index==4){
+                return new DisciplinePagePage(studentId: studentId,currentLang:currentLang);
+              }else if(index==5){
+                return new FrontPage(currentLang:currentLang);
+              }else if(index==6){
+                // ignore: missing_return
+                return new NewsEventPage(currentLang:currentLang);
+              }else if(index==7){
+                return new AboutPage(currentLang:currentLang);
+              }else if(index==8){
+                return new SettingPage(studentId: studentId,currentLang:currentLang);
+
+              }
+            });
+            Navigator.of(context).push(router);
+          }else{
+            return _showDialog();
+          }
         },
       ),
     );

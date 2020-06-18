@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:app/localization/localization.dart';
-import 'package:app/pages/paymentDetail.dart';
+import 'package:app/pages/courseDetailPage.dart';
 import '../url_api.dart';
 
 class CoursePage extends StatefulWidget {
-  final String studentId,currentLang,title;
+  final String currentLang,title;
 
-  CoursePage({this.title,this.studentId,this.currentLang});
+  CoursePage({this.title,this.currentLang});
   @override
   _CoursePageState createState() => _CoursePageState();
 }
 
 class _CoursePageState extends State<CoursePage> {
 
-  List paymentList = new List();
+  List courseList = new List();
   bool isLoading = true;
-  List rowPayment = new List();
+//  List rowPayment = new List();
 
   @override
   void initState() {
-    _getJsonPayment();
+    _getJsonCourse();
     super.initState();
   }
 
@@ -84,11 +84,11 @@ class _CoursePageState extends State<CoursePage> {
               padding: EdgeInsets.only(top: 45.0,left:10.0,right: 10.0,bottom: 10.0),
               child: Container(
                 height: MediaQuery.of(context).size.height,
-                child: paymentList.isNotEmpty
+                child: courseList.isNotEmpty
                   ? ListView.builder (
-                  itemCount:paymentList.length,
+                  itemCount:courseList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return _buildPaymentItem(index,paymentList[index]);
+                    return _buildCourseItem(index,courseList[index]);
                   }
                 ): Center(
                   child: Column(
@@ -104,20 +104,20 @@ class _CoursePageState extends State<CoursePage> {
       )
     );
   }
-  _getJsonPayment() async{
-    final String urlApi = StringData.paymentUrl+'&stu_id='+widget.studentId+'&currentLang='+widget.currentLang;
+  _getJsonCourse() async{
+    final String urlApi = StringData.course+'&currentLang='+widget.currentLang;
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState(() {
         if(json.decode(rawData.body)['code']=='SUCCESS'){
-            paymentList = json.decode(rawData.body)['result'] as List;
+            courseList = json.decode(rawData.body)['result'] as List;
             isLoading = false;
         }
       });
     }
   }
 
-  Widget _buildPaymentItem(int index ,rowPayment) {
+  Widget _buildCourseItem(int index , rowCourse) {
     DemoLocalization lang = DemoLocalization.of(context);
     String strLang = Localizations.localeOf(context).languageCode;
 
@@ -130,7 +130,7 @@ class _CoursePageState extends State<CoursePage> {
            boxShadow: <BoxShadow>[
              new BoxShadow (
                color: const Color(0xcce4e6e8),
-               offset: new Offset(1.0,1.0),
+               offset: new Offset(1.0,2.0),
                blurRadius: 1.0
              )
            ]
@@ -139,7 +139,7 @@ class _CoursePageState extends State<CoursePage> {
         child: InkWell(
           onTap:(){
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => PaymentDetailsPage(rowPayment:rowPayment, paymentId: rowPayment['id'])
+                builder: (context) => CourseDetailsPage(rowData:rowCourse)
             ));
           },
           child: Row(
@@ -147,42 +147,34 @@ class _CoursePageState extends State<CoursePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                padding: EdgeInsets.all(5.0),
-                color: Color(0xff07548f)
-                ,child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:[
-                  _rowTitlePaymentIcon(lang.tr('DEGREE'),Icon(Icons.category,color: Colors.white,size: 12.0),12.0),
-                  _rowTitlePaymentIcon(lang.tr('GRADE'),Icon(Icons.playlist_add_check,color: Colors.white,size: 12.0),12.0),
-                  _rowTitlePayment(rowPayment['receipt_number'],18.0),
-                  _rowTitlePayment(rowPayment['paymentMethod'],12.0),
-                  SizedBox(height: 10.0),
-                  _rowTitlePaymentIcon(rowPayment['createDate'],Icon(Icons.date_range,color: Colors.white,size: 12.0),12.0),
-                  _rowTitlePaymentIcon(rowPayment['byUser'],Icon(Icons.person,color: Colors.white,size: 12.0),12.0),
-                  _rowTitlePaymentIcon((index+1).toString(),Icon(Icons.done,color: Colors.white,size: 12.0),12.0)
-                ]
-              )
+//                padding: EdgeInsets.all(2.0),
+                child: Image.asset('images/hat.png',width: 100.0)
               ),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.only(left: 10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children:[
-                      Align(
-                        alignment: FractionalOffset.topRight,
-                        child:  Icon(Icons.more_horiz,size: 22.0,color:Colors.black45)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(lang.tr('COURSE'),style: TextStyle(fontSize: 16.0)),
+                          Expanded(
+                            child: Align(
+                                alignment: FractionalOffset.topRight,
+                                child:  Icon(Icons.more_horiz,size: 22.0,color:Colors.black45)
+                            ),
+                          ),
+
+                        ],
                       ),
-                      _rowPayment(lang.tr('TOTAL_PAYMENT'),rowPayment['totalPayment'],12.0),
-                      _rowPayment(lang.tr('Credit Memo'),rowPayment['creditMemo'],12.0),
-                      _rowPayment(lang.tr('Balance'),rowPayment['balanceDue'],12.0),
                       Container(
                         alignment: Alignment.bottomRight,
-                        child: Text(lang.tr("Paid")+" \$ : "+rowPayment['paidAmount'],style: TextStyle(
-                            fontFamily: (strLang=='km')?'Khmer':'Montserrat',
-                            fontSize: 14.0,color:Colors.red.shade700,fontWeight: FontWeight.w600))
+                        child: Text(rowCourse['title'].toString(),style: TextStyle(
+                          fontFamily: (strLang=='km')?'Khmer':'Montserrat',
+                          fontSize: 16.0,fontWeight: FontWeight.w600,color:Color(0xff3568aa) ))
                       )
                     ]
                   )
@@ -193,66 +185,5 @@ class _CoursePageState extends State<CoursePage> {
         )
     );
   }
-  Widget _rowTitlePaymentIcon(String stringData,Icon icon, double fontSize){
-    return Row(
-      children:[
-       icon,
-        Text(stringData, style:TextStyle(
-          fontFamily: 'Montserrat',
-          fontSize: fontSize,
-          fontWeight: FontWeight.w600,
-          color: Colors.white
-          )
-        )
-      ]
-    );
-  }
-  Widget _rowTitlePayment(String stringData, double fontSize){
-    return Row(
-      children:[
-        Text(
-            stringData, style:TextStyle(
-            fontFamily: 'Montserrat',
-            fontSize: fontSize,
-            fontWeight: FontWeight.w600,
-            color: Colors.white
-          )
-        )
-      ]
-    );
-  }
-  Widget _rowPayment(String textData, priceData,double fontSize){
-   String strLang = Localizations.localeOf(context).languageCode;
-    return new Container(
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.black26,width: 1.0))
-      ),
-      child: Row(
-        children: [
-         Expanded(
-           child: Text(textData,style: TextStyle(
-               fontFamily: (strLang=='km')?'Khmer':'Montserrat',
-               fontSize: fontSize,
-               fontWeight: FontWeight.w500,
-               color: Color(0xff07548f).withOpacity(0.9)
-              )
-           )
-         ),
-         Expanded(
-           child: Align(
-             alignment: Alignment.topRight,
-               child: Text(priceData,style: TextStyle(
-                   fontFamily: (strLang=='km')?'Khmer':'Montserrat',
-                   fontSize: fontSize,
-                   fontWeight: FontWeight.bold,
-                   color: Color(0xff07548f),
-                   fontStyle: FontStyle.italic
-               )
-             )
-           )
-         )
-        ]
-      ),
-    );
-  }
+
 }

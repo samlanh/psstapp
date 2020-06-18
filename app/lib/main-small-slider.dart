@@ -354,7 +354,7 @@ class _HomeAppState extends State<HomeApp> {
       var router = new MaterialPageRoute(builder: (context){
 //      return PaymentPage(studentId: studentId,currentLang:currentLang);
       if(index==0){
-        return PaymentPage(studentId: studentId,currentLang:currentLang);
+        return CoursePage(studentId: studentId,currentLang:currentLang);
       }else if(index==1){
         return new SchedulePage(studentId: studentId,currentLang:currentLang);
       }else if(index==2){
@@ -533,7 +533,7 @@ class _HomeAppState extends State<HomeApp> {
         onTap: (){
           var router = new MaterialPageRoute(builder: (context){
             if(index==0){
-              return PaymentPage(studentId: studentId,currentLang:currentLang);
+              return CoursePage(studentId: studentId,currentLang:currentLang);
             }else if(index==1){
               return new SchedulePage(studentId: studentId,currentLang:currentLang);
             }else if(index==2){
