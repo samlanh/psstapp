@@ -328,7 +328,7 @@ class _AboutPageState extends State<AboutPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              rowContact(icon,title,1),
+              rowContact(icon,title,1,5),
               Directionality( textDirection: TextDirection.ltr,
                   child:  Text("Formally known as American Academy of Language and Art (AALA), ELT was founded by US "
                       "entrepreneurs who strongly believed that education was a foundation in rebuilding "
@@ -389,13 +389,13 @@ class _AboutPageState extends State<AboutPage> {
               style: TextStyle(fontSize: 16.0,fontFamily: 'Khmer'),
             ),
           ),
-          rowContact(Icon(Icons.pin_drop,color: Color(0xff2a62b4)),dataRow['description'].toString(),2),
+          rowContact(Icon(Icons.pin_drop,color: Color(0xff2a62b4)),dataRow['description'].toString(),2,1),
           SizedBox(height:10.0),
-          rowContact(Icon(Icons.call,color: Color(0xff2a62b4)),dataRow['phone'].toString(),1),
+          rowContact(Icon(Icons.call,color: Color(0xff2a62b4)),dataRow['phone'].toString(),1,2),
           SizedBox(height:10.0),
-          rowContact(Icon(Icons.email,color: Color(0xff2a62b4)),dataRow['email'].toString(),1),
+          rowContact(Icon(Icons.email,color: Color(0xff2a62b4)),dataRow['email'].toString(),1,3),
           SizedBox(height:10.0),
-          rowContact(Icon(Icons.language,color: Color(0xff2a62b4)),dataRow['website'].toString(),1),
+          rowContact(Icon(Icons.language,color: Color(0xff2a62b4)),dataRow['website'].toString(),1,4),
           SizedBox(height:25.0),
           Text("Find us",style:TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold,color: Colors.black45)),
           SizedBox(height:10.0),
@@ -413,6 +413,19 @@ class _AboutPageState extends State<AboutPage> {
                             await launch("tel://"+dataRow['phone'].toString());
                           }
                         }
+                    )
+                ),
+                SizedBox(width: 10.0),
+                Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      child: Image.asset(
+                          'images/messenger.png', fit: BoxFit.fill),
+                      onTap: () async{
+                        if (await canLaunch(dataRow['other_social'].toString())) {
+                          await launch(dataRow['other_social'].toString());
+                        }
+                      },
                     )
                 ),
                 SizedBox(width: 10.0),
@@ -481,7 +494,7 @@ class _AboutPageState extends State<AboutPage> {
       ],
     );
   }
-  Widget rowContact(Icon icon,String textLabel,int type){
+  Widget rowContact(Icon icon,String textLabel,int type,int lunchType){
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -489,12 +502,26 @@ class _AboutPageState extends State<AboutPage> {
         icon,
         SizedBox(width: 10.0),
         Expanded(
-            child: (type==1)? Text(
-            textLabel,
-            style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.w700,color: Colors.black45)
-          ):Html(
-            data: textLabel,
-          )
+          child: InkWell(
+              child: (type == 1) ? Text(
+                  textLabel,
+                  style: TextStyle(fontSize: 16.0,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black45)
+              ) : Html(
+                data: textLabel,
+              ),
+              onTap: () async{
+                if(lunchType==2){
+                  await launch("tel://"+textLabel);
+                }else if(lunchType==3){
+                  await launch("mailto:"+textLabel);
+                }
+                else if(lunchType==4){
+                  await launch(textLabel);
+                }
+              }
+          ),
         )
       ],
     );

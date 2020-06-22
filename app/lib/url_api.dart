@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 class StringData{
-  static String imageURL = 'http://192.168.1.5/psst/trunk/public/images';
-  static String mainUrl = 'http://192.168.1.5/psst/trunk/public/api/index';
+  static String imageURL = 'http://192.168.1.7/psst/trunk/public/images';
+  static String mainUrl = 'http://192.168.1.7/psst/trunk/public/api/index';
 //  static String mainUrl = 'http://192.168.1.7/psst/trunk/public/api/index';
   static String loginUrl = mainUrl + '?url=auth';
   static String paymentUrl = mainUrl + '?url=payment';

@@ -113,40 +113,62 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
                   Color(0xff009ccf),
                 ])
             ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(widget.rowData['for_month'].toString(),style: TextStyle(fontSize:14.0,fontFamily: "khmer",color:Colors.yellow,fontWeight: FontWeight.bold)),
-                        _rowSummerData("Year",widget.rowData['academicYear'].toString()),
-                        _rowSummerData("Grade",widget.rowData['gradeTitle'].toString()),
-                        _rowSummerData("Class",widget.rowData['groupCode'].toString()),
-                      ]
-                    )
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text(widget.rowData['for_month'].toString(),style: TextStyle(fontSize:14.0,fontFamily: "khmer",color:Colors.yellow,fontWeight: FontWeight.bold)),
+                            _rowSummerData("Year",widget.rowData['academicYear'].toString()),
+                            _rowSummerData("Grade",widget.rowData['gradeTitle'].toString()),
+                            _rowSummerData("Class",widget.rowData['groupCode'].toString()),
+                          ]
+                        )
+                      ),
+                      SizedBox(width: 5.0),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            _rowSummerData(lang.tr('Total Score'),widget.rowData['totalScore'].toString()),
+                            _rowSummerData(lang.tr('Score Average'),widget.rowData['totalAverage'].toString()),
+                            _rowSummerData(lang.tr('MentionGrade'),widget.rowData['metionGrade'].toString()),
+                            _rowSummerData(lang.tr('Mention'),widget.rowData['mention'].toString()),
+                            _rowSummerData(lang.tr('Result'),lang.tr(widget.rowData['restultStatus'].toString())),
+                            _rowSummerData(lang.tr("Rank"),widget.rowData['rank'].toString()),
+
+                          ],
+                        )
+                      )
+                    ]
                   ),
-                  SizedBox(width: 5.0),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        _rowSummerData(lang.tr('Total Score'),widget.rowData['totalScore'].toString()),
-                        _rowSummerData(lang.tr('Score Average'),widget.rowData['totalAverage'].toString()),
-                        _rowSummerData(lang.tr('MentionGrade'),widget.rowData['metionGrade'].toString()),
-                        _rowSummerData(lang.tr('Mention'),widget.rowData['mention'].toString()),
-                        _rowSummerData(lang.tr('Result'),lang.tr(widget.rowData['restultStatus'].toString())),
-                        _rowSummerData(lang.tr("Rank"),widget.rowData['rank'].toString())
-                      ],
-                    )
-                  )
-                ]
+                  FlatButton.icon(
+                    onPressed:(){
+//                      Navigator.push(context,MaterialPageRoute(builder: (context) => AppVideoPage(currentLang:currentLang)));
+                    },
+                    color: Colors.red,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: BorderSide(color: Colors.red)
+                    ),
+                    icon: Icon(Icons.file_download,color: Colors.white),
+                    label: Text(lang.tr("DOWNLOAD"),style:TextStyle(
+                      color:Colors.white,fontSize: 16.0,
+                    ))
+                  ),
+                ],
               )
-            )
+            ),
+
         ]
       )
     );

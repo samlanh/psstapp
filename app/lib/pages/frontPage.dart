@@ -17,6 +17,7 @@ import 'package:app/pages/newsPage.dart';
 import 'package:app/pages/coursePage.dart';
 import 'package:app/pages/loginpage.dart';
 import 'package:app/pages/calendarPage.dart';
+import 'package:app/pages/appVideoPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FrontPage extends StatefulWidget {
@@ -126,6 +127,8 @@ class _FrontPageState extends State<FrontPage> {
               alignment: Alignment.center,
               children: <Widget>[
                   Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
                         height: 230.0,
@@ -138,9 +141,41 @@ class _FrontPageState extends State<FrontPage> {
 //                        child: Text('Blank'),
                       ),
                       Container(
-                        height: 200.0,
+                        color: Colors.white,
+                        padding: EdgeInsets.all(10.0),
+                        child: Text('សាលាបញ្ញាសាស្ត្រ​ សាខាទី១'
+                            'បានបង្កើតកម្មវិធីលើទូរសព្ទដែលអោយសិស្យនិងអាណាព្យាបាលសិស្សអាចតាមដាន'
+                            'ការសិក្សាបានដោយងាយស្រួល!',style: TextStyle(color: Color(0xff054798),fontSize:14.0,fontFamily: 'Khmer')),
+                      ),
+                      Container(
+                        height: 400.0,
                         width: MediaQuery.of(context).size.width,
-                        child: Text("Video",style: TextStyle(color: Colors.red)),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("images/appshow.png"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                       child: Row(
+                         crossAxisAlignment:CrossAxisAlignment.center ,
+                         mainAxisAlignment: MainAxisAlignment.end,
+                         children: <Widget>[
+                             FlatButton.icon(
+                                 onPressed:(){
+                                   Navigator.push(context,MaterialPageRoute(builder: (context) => AppVideoPage(currentLang:currentLang)));
+                                 },
+                                 color: Colors.red,
+                                 shape: RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.circular(8.0),
+                                     side: BorderSide(color: Colors.red)
+                                 ),
+                                 icon: Icon(Icons.play_circle_filled,color: Colors.white),
+                                 label: Text(lang.tr("WATCH_HOW_TO_USE"),style:TextStyle(
+                                     color:Colors.white,fontSize: 16.0,
+                                 ))
+                             ),
+                         ],
+                       ),
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width,
@@ -233,6 +268,7 @@ class _FrontPageState extends State<FrontPage> {
             contactList['phone']= json.decode(rawData.body)['result']['phone'].toString();
             contactList['email']= json.decode(rawData.body)['result']['email'].toString();
             contactList['website']= json.decode(rawData.body)['result']['website'].toString();
+            contactList['other_social']= json.decode(rawData.body)['result']['other_social'].toString();
             contactList['facebook']= json.decode(rawData.body)['result']['facebook'].toString();
             contactList['youtube']= json.decode(rawData.body)['result']['youtube'].toString();
             contactList['instagram']= json.decode(rawData.body)['result']['instagram'].toString();
@@ -384,16 +420,16 @@ class _FrontPageState extends State<FrontPage> {
             ),
           ),
           rowContact(Icon(Icons.pin_drop, color: Color(0xff2a62b4)),
-              dataRow['description'].toString(), 2),
+              dataRow['description'].toString(), 2,1),
           SizedBox(height: 10.0),
           rowContact(Icon(Icons.call, color: Color(0xff2a62b4)),
-              dataRow['phone'].toString(), 1),
+              dataRow['phone'].toString(), 1,2),
           SizedBox(height: 10.0),
           rowContact(Icon(Icons.email, color: Color(0xff2a62b4)),
-              dataRow['email'].toString(), 1),
+              dataRow['email'].toString(), 1,3),
           SizedBox(height: 10.0),
           rowContact(Icon(Icons.language, color: Color(0xff2a62b4)),
-              dataRow['website'].toString(), 1),
+              dataRow['website'].toString(), 1,4),
           SizedBox(height: 25.0),
           Text("Find us", style: TextStyle(fontSize: 16.0,
               fontWeight: FontWeight.bold,
@@ -418,6 +454,19 @@ class _FrontPageState extends State<FrontPage> {
                           }
                       )
                   ),
+                  SizedBox(width: 10.0),
+                  Container(
+                      child: GestureDetector(
+                        child:Image.asset(
+                            'images/messenger.png', fit: BoxFit.fill,width: 50.0),
+                        onTap: () async {
+                          if (await canLaunch(dataRow['other_social'].toString())) {
+                            await launch(dataRow['other_social'].toString());
+                          }
+                        },//
+                      )
+                  ),
+
                   SizedBox(width: 10.0),
                   Container(
                       child: GestureDetector(
@@ -465,7 +514,7 @@ class _FrontPageState extends State<FrontPage> {
     );
   }
 
-  Widget rowContact(Icon icon, String textLabel, int type) {
+  Widget rowContact(Icon icon, String textLabel, int type, int lunchType) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -473,6 +522,7 @@ class _FrontPageState extends State<FrontPage> {
         icon,
         SizedBox(width: 10.0),
         Expanded(
+          child: InkWell(
             child: (type == 1) ? Text(
                 textLabel,
                 style: TextStyle(fontSize: 16.0,
@@ -480,7 +530,18 @@ class _FrontPageState extends State<FrontPage> {
                     color: Colors.black45)
             ) : Html(
               data: textLabel,
-            )
+            ),
+              onTap: () async{
+                if(lunchType==2){
+                  await launch("tel://"+textLabel);
+                }else if(lunchType==3){
+                  await launch("mailto:"+textLabel);
+                }
+                else if(lunchType==4){
+                    await launch(textLabel);
+                }
+              }
+          ),
         )
       ],
     );

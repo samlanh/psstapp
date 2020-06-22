@@ -561,7 +561,7 @@ class _HomeAppState extends State<HomeApp> {
   }
   singOutUser(){
     sharedPreferences.clear();
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => FrontPage()), (Route<dynamic> route) => false);
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => FrontPage(currentLang:currentLang)), (Route<dynamic> route) => false);
   }
   static List<MyGrideView> getGride(){
     var gridList = new List<MyGrideView>();
@@ -570,7 +570,7 @@ class _HomeAppState extends State<HomeApp> {
     gridList.add(new MyGrideView(("Attendance"), "Installment Management System", "images/attendance.png"));
     gridList.add(new MyGrideView(("Score"), "Enrollment Management System",  "images/score.png"));
     gridList.add(new MyGrideView(("Discipline"), "Enrollment Management System",  "images/studenthistory.png"));
-    gridList.add(new MyGrideView(("Calendar"), "Enrollment Management System",  "images/schedule.png"));
+    gridList.add(new MyGrideView(("Calendar"), "Enrollment Management System",  "images/calendar.png"));
     gridList.add(new MyGrideView(("Study History"), "Installment Management System", "images/elearning.png"));
     gridList.add(new MyGrideView(("News & Event"), "Enrollment Management System",  "images/news.png"));
     gridList.add(new MyGrideView(("About us"), "Installment Management System", "images/about.png"));

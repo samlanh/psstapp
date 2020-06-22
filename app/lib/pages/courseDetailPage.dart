@@ -77,11 +77,17 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                     ),
 
                     SizedBox(height: 20.0),
-                    Directionality(textDirection: TextDirection.ltr,
-                      child: Html(
-                        data: widget.rowData['description'].toString(),
-                      )
+                    Html(
+//                      shrinkWrap: true,
+                      data: widget.rowData['description'].toString(),
                     )
+//                    Directionality(textDirection: TextDirection.ltr,
+//                      child: Html(
+//                        shrinkWrap: true,
+//
+//                        data: widget.rowData['description'].toString(),
+//                      )
+//                    )
                   ]
                 )
               )
