@@ -5,19 +5,20 @@ import 'package:app/localization/localization.dart';
 import 'package:app/pages/paymentDetail.dart';
 import '../url_api.dart';
 
-class CoursePage extends StatefulWidget {
+class PaymentPage extends StatefulWidget {
   final String studentId,currentLang,title;
 
-  CoursePage({this.title,this.studentId,this.currentLang});
+  PaymentPage({this.title,this.studentId,this.currentLang});
   @override
-  _CoursePageState createState() => _CoursePageState();
+  _PaymentPageState createState() => _PaymentPageState();
 }
 
-class _CoursePageState extends State<CoursePage> {
+class _PaymentPageState extends State<PaymentPage> {
 
   List paymentList = new List();
   bool isLoading = true;
   List rowPayment = new List();
+  String currentFont='Khmer';
 
   @override
   void initState() {
@@ -28,7 +29,7 @@ class _CoursePageState extends State<CoursePage> {
   @override
   Widget build(BuildContext context) {
     DemoLocalization lang = DemoLocalization.of(context);
-    String strLang = Localizations.localeOf(context).languageCode;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -40,7 +41,7 @@ class _CoursePageState extends State<CoursePage> {
             SizedBox(width: 10.0),
             Text(lang.tr(widget.title.toString()),
               style: TextStyle(
-                fontFamily: (strLang=='km')?'Khmer':'Montserrat',
+                fontFamily: currentFont,
                 fontSize: 18.0,
                 color: Colors.white)
             )
@@ -70,37 +71,37 @@ class _CoursePageState extends State<CoursePage> {
            ),
         ),
         child: Container(
-            alignment: AlignmentDirectional.center,
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-              color: Color(0xfff2f6fc),
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(40.0))
-            ),
-            child:isLoading ? new Stack(alignment: AlignmentDirectional.center,
-                children: <Widget>[
-                  new CircularProgressIndicator(),
-                ]) :
-            Padding(
-              padding: EdgeInsets.only(top: 45.0,left:10.0,right: 10.0,bottom: 10.0),
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                child: paymentList.isNotEmpty
-                  ? ListView.builder (
-                  itemCount:paymentList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _buildPaymentItem(index,paymentList[index]);
-                  }
-                ): Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      notFoundPage()
-                    ],
-                  ),
-                )
+          alignment: AlignmentDirectional.center,
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            color: Color(0xfff2f6fc),
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(40.0))
+          ),
+          child:isLoading ? new Stack(alignment: AlignmentDirectional.center,
+            children: <Widget>[
+              new CircularProgressIndicator(),
+            ]) :
+          Padding(
+            padding: EdgeInsets.only(top: 45.0,left:10.0,right: 10.0,bottom: 10.0),
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: paymentList.isNotEmpty
+                ? ListView.builder (
+                itemCount:paymentList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return _buildPaymentItem(index,paymentList[index]);
+                }
+              ): Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    notFoundPage()
+                  ],
+                ),
               )
-            ),
-          )
+            )
+          ),
+        )
       )
     );
   }
@@ -110,8 +111,9 @@ class _CoursePageState extends State<CoursePage> {
     if(rawData.statusCode==200){
       setState(() {
         if(json.decode(rawData.body)['code']=='SUCCESS'){
-            paymentList = json.decode(rawData.body)['result'] as List;
-            isLoading = false;
+          currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
+          paymentList = json.decode(rawData.body)['result'] as List;
+          isLoading = false;
         }
       });
     }
@@ -119,7 +121,6 @@ class _CoursePageState extends State<CoursePage> {
 
   Widget _buildPaymentItem(int index ,rowPayment) {
     DemoLocalization lang = DemoLocalization.of(context);
-    String strLang = Localizations.localeOf(context).languageCode;
 
      return new Container(
        margin: EdgeInsets.only(bottom: 10.0),
@@ -155,12 +156,10 @@ class _CoursePageState extends State<CoursePage> {
                 children:[
                   _rowTitlePaymentIcon(lang.tr('DEGREE'),Icon(Icons.category,color: Colors.white,size: 12.0),12.0),
                   _rowTitlePaymentIcon(lang.tr('GRADE'),Icon(Icons.playlist_add_check,color: Colors.white,size: 12.0),12.0),
-                  _rowTitlePayment(rowPayment['receipt_number'],18.0),
-                  _rowTitlePayment(rowPayment['paymentMethod'],12.0),
-                  SizedBox(height: 10.0),
+                  _rowTitlePaymentIcon(rowPayment['receipt_number'],Icon(Icons.receipt,color: Colors.white,size: 12.0),12.0),
+                  _rowTitlePaymentIcon(rowPayment['paymentMethod'],Icon(Icons.account_balance_wallet,color: Colors.white,size: 12.0),12.0),
                   _rowTitlePaymentIcon(rowPayment['createDate'],Icon(Icons.date_range,color: Colors.white,size: 12.0),12.0),
                   _rowTitlePaymentIcon(rowPayment['byUser'],Icon(Icons.person,color: Colors.white,size: 12.0),12.0),
-                  _rowTitlePaymentIcon((index+1).toString(),Icon(Icons.done,color: Colors.white,size: 12.0),12.0)
                 ]
               )
               ),
@@ -181,8 +180,8 @@ class _CoursePageState extends State<CoursePage> {
                       Container(
                         alignment: Alignment.bottomRight,
                         child: Text(lang.tr("Paid")+" \$ : "+rowPayment['paidAmount'],style: TextStyle(
-                            fontFamily: (strLang=='km')?'Khmer':'Montserrat',
-                            fontSize: 14.0,color:Colors.red.shade700,fontWeight: FontWeight.w600))
+                          fontFamily: currentFont,
+                          fontSize: 14.0,color:Colors.red.shade700,fontWeight: FontWeight.w600))
                       )
                     ]
                   )
@@ -193,12 +192,13 @@ class _CoursePageState extends State<CoursePage> {
         )
     );
   }
+
   Widget _rowTitlePaymentIcon(String stringData,Icon icon, double fontSize){
     return Row(
       children:[
        icon,
-        Text(stringData, style:TextStyle(
-          fontFamily: 'Montserrat',
+        Text(stringData.toString(), style:TextStyle(
+          fontFamily: currentFont,
           fontSize: fontSize,
           fontWeight: FontWeight.w600,
           color: Colors.white
@@ -207,22 +207,23 @@ class _CoursePageState extends State<CoursePage> {
       ]
     );
   }
+
   Widget _rowTitlePayment(String stringData, double fontSize){
     return Row(
       children:[
         Text(
-            stringData, style:TextStyle(
-            fontFamily: 'Montserrat',
-            fontSize: fontSize,
-            fontWeight: FontWeight.w600,
-            color: Colors.white
+          stringData, style:TextStyle(
+          fontFamily: currentFont,
+          fontSize: fontSize,
+          fontWeight: FontWeight.w600,
+          color: Colors.white
           )
         )
       ]
     );
   }
+
   Widget _rowPayment(String textData, priceData,double fontSize){
-   String strLang = Localizations.localeOf(context).languageCode;
     return new Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.black26,width: 1.0))
@@ -231,10 +232,10 @@ class _CoursePageState extends State<CoursePage> {
         children: [
          Expanded(
            child: Text(textData,style: TextStyle(
-               fontFamily: (strLang=='km')?'Khmer':'Montserrat',
-               fontSize: fontSize,
-               fontWeight: FontWeight.w500,
-               color: Color(0xff07548f).withOpacity(0.9)
+             fontFamily: currentFont,
+             fontSize: fontSize,
+             fontWeight: FontWeight.w500,
+             color: Color(0xff07548f).withOpacity(0.9)
               )
            )
          ),
@@ -242,11 +243,11 @@ class _CoursePageState extends State<CoursePage> {
            child: Align(
              alignment: Alignment.topRight,
                child: Text(priceData,style: TextStyle(
-                   fontFamily: (strLang=='km')?'Khmer':'Montserrat',
-                   fontSize: fontSize,
-                   fontWeight: FontWeight.bold,
-                   color: Color(0xff07548f),
-                   fontStyle: FontStyle.italic
+                fontFamily: currentFont,
+                fontSize: fontSize,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff07548f),
+                fontStyle: FontStyle.italic
                )
              )
            )

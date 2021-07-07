@@ -18,6 +18,7 @@ class _DisciplineDetailPageState extends State<DisciplineDetailPage> {
 
   List attendanceList = new List();
   bool isLoading= true;
+  String currentFont='Khmer';
 
   @override
   void initState(){
@@ -38,7 +39,7 @@ class _DisciplineDetailPageState extends State<DisciplineDetailPage> {
             SizedBox(width: 10.0),
             Text(lang.tr('Discipline')+' ('+lang.tr(widget.rowData['dateLabel'])+')',
               style: TextStyle(
-                fontFamily: 'Montserrat',
+                fontFamily: currentFont,
                 fontSize: 18.0,
                 color: Colors.white)
             ),
@@ -130,7 +131,9 @@ class _DisciplineDetailPageState extends State<DisciplineDetailPage> {
                   rowSummerData(lang.tr('Moderate'),widget.rowData['MODERATE'].toString()+' '+lang.tr('TIMES')),
                   rowSummerData(lang.tr('Major'),widget.rowData['MAJOR'].toString()+' '+lang.tr('TIMES')),
                   rowSummerData(lang.tr('Other'),widget.rowData['OTHER'].toString()+' '+lang.tr('TIMES')),
-                  Text(lang.tr('Total')+" "+widget.rowData['TOTAL_ATTRECORD'].toString()+' '+lang.tr('TIMES'),style: TextStyle(fontSize:18.0,color: Colors.white,fontWeight: FontWeight.bold)),
+                  Text(lang.tr('Total')+" "+widget.rowData['TOTAL_ATTRECORD'].toString()+' '+lang.tr('TIMES'),
+                      style: TextStyle(fontSize:16.0,color: Colors.white,fontWeight: FontWeight.bold,
+                      fontFamily: currentFont)),
                 ]
               )
             )
@@ -145,6 +148,7 @@ class _DisciplineDetailPageState extends State<DisciplineDetailPage> {
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState((){
+        currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
         if(json.decode(rawData.body)['code']=='SUCCESS'){
           attendanceList = json.decode(rawData.body)['result'] as List;
           isLoading = false;
@@ -160,10 +164,15 @@ class _DisciplineDetailPageState extends State<DisciplineDetailPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Expanded(
-          child: Text(strLabel,style: TextStyle(color: Colors.white,fontSize: 14.0,fontWeight: FontWeight.bold)),
+          child: Text(strLabel,style: TextStyle(color: Colors.white,
+              fontSize: 14.0,
+              fontFamily: currentFont,
+              fontWeight: FontWeight.bold)),
         ),
         Expanded(
-          child: Text(strData,style:TextStyle(color: Colors.white,fontSize: 14.0)
+          child: Text(strData,style:TextStyle(color: Colors.white,
+              fontFamily: currentFont,
+              fontSize: 14.0)
           )
         )
       ],
@@ -197,7 +206,7 @@ class _DisciplineDetailPageState extends State<DisciplineDetailPage> {
               height: 110.0,
               padding: EdgeInsets.all(5.0),
               color: Color(0xff07548f),
-              child: rowTitleDiscipline(lang.tr(rowData['attendenceStatusTitle']),rowData['dateAttendence'],22.0),
+              child: rowTitleDiscipline(lang.tr(rowData['attendenceStatusTitle']),rowData['dateAttendence']),
             ),
           Expanded(
             child: Padding(padding: EdgeInsets.only(left: 5.0),
@@ -207,7 +216,8 @@ class _DisciplineDetailPageState extends State<DisciplineDetailPage> {
                 children:[
                   rowDiscipline(lang.tr('Reason'),'',14.0),
                   Directionality( textDirection: TextDirection.ltr,
-                    child: Text(rowData['description'],textAlign: TextAlign.justify),
+                    child: Text(rowData['description'],textAlign: TextAlign.justify,
+                    style: TextStyle(fontFamily: currentFont),),
                   )
                 ]
               )
@@ -219,13 +229,15 @@ class _DisciplineDetailPageState extends State<DisciplineDetailPage> {
   }
 
 
-  Widget rowTitleDiscipline(String strData,String strDate,double fontSize){
+  Widget rowTitleDiscipline(String strData,String strDate){
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
-          child: Text(strData,style: TextStyle(fontSize: fontSize,color: Colors.white,fontWeight: FontWeight.bold),),
+          child: Text(strData,style: TextStyle(fontSize: 16.0,
+              color: Colors.white,fontWeight: FontWeight.bold,
+              fontFamily: currentFont),),
         ),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -233,7 +245,7 @@ class _DisciplineDetailPageState extends State<DisciplineDetailPage> {
           children:[
             Icon(Icons.date_range,color: Colors.white,size: 16.0),
             Text(strDate, style:TextStyle(
-              fontFamily: 'Montserrat',
+              fontFamily: currentFont,
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: Colors.white
@@ -255,7 +267,7 @@ class _DisciplineDetailPageState extends State<DisciplineDetailPage> {
         children: [
          Expanded(
            child: Text(textData,style: TextStyle(
-             fontFamily: 'Montserrat',
+             fontFamily: currentFont,
              fontSize: fontSize,
              fontWeight: FontWeight.w500,
              color: Color(0xff07548f).withOpacity(0.9)
@@ -266,7 +278,7 @@ class _DisciplineDetailPageState extends State<DisciplineDetailPage> {
            child:  Align(
              alignment: Alignment.topRight,
              child: Text(priceData,style: TextStyle(
-               fontFamily: 'Montserrat',
+               fontFamily: currentFont,
                fontSize: fontSize,
                fontWeight: FontWeight.bold,
                color: Color(0xff07548f),

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 class StringData{
-  static String imageURL = 'http://192.168.1.7/psst/trunk/public/images';
-  static String mainUrl = 'http://192.168.1.7/psst/trunk/public/api/index';
-//  static String mainUrl = 'http://192.168.1.7/psst/trunk/public/api/index';
+ // psis: dfc704ab-e023-4b0b-b030-e300f13b74eb
+  static String OnesigneAppId='2724c04c-dfba-428d-90b9-7739847d62b6';
+  //static String imageURL = 'http://192.168.1.6/psst/trunk/public/images';
+  //static String mainUrl = 'http://192.168.1.6/psst/trunk/public/api/index';
+  static String imageURL = 'http://161.117.89.247/ahs.25.12.20/public/images';
+  static String mainUrl = 'http://161.117.89.247/ahs.25.12.20/public/api/index';
   static String loginUrl = mainUrl + '?url=auth';
+  static String changePassword = mainUrl+'?url=changePassword';
+  static String addToken = mainUrl+'?url=addtoken';
+
   static String paymentUrl = mainUrl + '?url=payment';
   static String paymentDetailUrl = mainUrl + '?url=paymentDetail';
   static String studentProfile = mainUrl+'?url=profile'  ;
@@ -16,14 +22,17 @@ class StringData{
   static String scoreDetail = mainUrl+'?url=scoredetail';
   static String news = mainUrl+'?url=news';
   static String notification = mainUrl+'?url=notification';
-  static String changePassword = mainUrl+'?url=changePassword';
+
   static String contactUs = mainUrl+'?url=contactus';
-  static String singlecontact = mainUrl+'?url=singlecontact';
+  static String singleContact = mainUrl+'?url=singlecontact';
   static String eLearning = mainUrl+'?url=elearning';
   static String eLearningVideo = mainUrl+'?url=elearningvideo';
-  static String downloadTranscript = mainUrl+'?url=transcriptpdf';
-  static String slieshow = mainUrl+'?url=slieshow';
+  static String downloadTranscript = mainUrl+'/transcriptpdf';
+  static String slideShow = mainUrl+'?url=slieshow';
   static String course = mainUrl+'?url=course';
+  static String getDateHoliday = mainUrl+'?url=getholiday';
+  static String calendar = mainUrl+'?url=calendar';
+  static String introductionHome = mainUrl+'?url=introductionhome';
 }
 Widget notFoundPage(){
   return Center(

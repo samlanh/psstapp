@@ -19,6 +19,7 @@ class _NewsEventPageState extends State<NewsEventPage> {
   bool isLoading = true;
   List newsList = new List();
   List<NetworkImage> imagesList = List<NetworkImage>();
+  String currentFont='Khmer';
 
   @override
   void initState() {
@@ -38,7 +39,9 @@ class _NewsEventPageState extends State<NewsEventPage> {
           children: <Widget>[
             Image.asset('images/news.png',height: 50.0),
             SizedBox(width: 5.0,),
-            Text(lang.tr("News & Event"))
+            Text(lang.tr("News & Event"),style:TextStyle(
+              fontFamily: currentFont,
+              fontSize: 18.0))
           ]
         ),
         flexibleSpace: Container(
@@ -60,17 +63,8 @@ class _NewsEventPageState extends State<NewsEventPage> {
               Expanded(
                 flex: 3,
                 child: Container(
-                  padding: EdgeInsets.only(top: 30.0,left:0.0,right: 10.0,bottom: 10.0),
+                  padding: EdgeInsets.only(left:0.0,right: 0.0,bottom: 10.0),
                   margin: EdgeInsets.only(bottom: 10.0),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: <Color>[
-                        Color(0xff054798),
-                        Color(0xff009ccf),
-                      ])
-                  ),
                   child: isLoading ? new Stack(alignment: AlignmentDirectional.center,
                       children: <Widget>[new CircularProgressIndicator()]) : sliderContents()
                 )
@@ -105,6 +99,7 @@ class _NewsEventPageState extends State<NewsEventPage> {
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState(() {
+        currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
         if(json.decode(rawData.body)['code']=='SUCCESS'){
           newsList = json.decode(rawData.body)['result']['normal_news'] as List;
           var listFeature =  json.decode(rawData.body)['result']['feature_news'] as List;
@@ -146,7 +141,8 @@ class _NewsEventPageState extends State<NewsEventPage> {
         ));
       },
       child: Container(
-        margin: EdgeInsets.only(bottom: 10.0),
+          margin: EdgeInsets.only(bottom: 10.0),
+          padding: EdgeInsets.all(5.0),
         decoration: new BoxDecoration(
           color: Colors.white,
           border: new Border.all(width: 1.0,color:Color(0xffe4e6e8)),
@@ -159,7 +155,6 @@ class _NewsEventPageState extends State<NewsEventPage> {
             ),
           ],
         ),
-        padding: EdgeInsets.only( right: 5.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,9 +170,10 @@ class _NewsEventPageState extends State<NewsEventPage> {
                   ]
                 )
               ),
-              height: 89.0,
+              height: 105.0,
+              width: 130.0,
               child:((rowData['image_feature'].toString()!='')
-                ? Image.network(StringData.imageURL+'/newsevent/'+rowData['image_feature'])
+                ? Image.network(StringData.imageURL+'/newsevent/'+rowData['image_feature'],fit: BoxFit.cover)
                 : Image.asset('images/news.png',fit: BoxFit.cover)
               )
             ),
@@ -190,17 +186,20 @@ class _NewsEventPageState extends State<NewsEventPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children:[
                     Flexible(
-                      child: Text(rowData['title'].toString(), style: TextStyle(fontFamily: 'Khmer',fontSize: 12.0),
+                      child: Text(rowData['title'].toString(), style: TextStyle(
+                          fontFamily: currentFont,fontSize: 12.0),
                           overflow: TextOverflow.fade
                       )
                     ),
                     Directionality( textDirection: TextDirection.ltr,
                       child: Text("",textAlign: TextAlign.justify),
                     ),
-                    Stack(
-                      alignment: AlignmentDirectional.bottomStart,
+                    Row(
+//                      alignment: AlignmentDirectional.bottomStart,
                       children: <Widget>[
-                        Text("Publish Date : "+rowData['publish_date'].toString(),style: TextStyle(color: Colors.black45,fontSize:10.0))
+                        Icon(Icons.calendar_today,size:12.0,color: Colors.black45),
+                        SizedBox(width: 10.0),
+                        Text(rowData['publish_date'].toString(),style: TextStyle(color: Colors.black45,fontSize:10.0))
                       ],
                     )
                   ]

@@ -17,6 +17,7 @@ class _ScorePageState extends State<ScorePage> {
 
   List scoreList = new List();
   bool isLoading = true;
+  String currentFont='Khmer';
 
   @override
   void initState(){
@@ -39,8 +40,8 @@ class _ScorePageState extends State<ScorePage> {
             SizedBox(width: 10.0),
             Text(lang.tr('Score'),
               style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 18.0,
+                fontFamily: currentFont,
+                fontSize: 16.0,
                 color: Colors.white)
             )
           ]
@@ -112,6 +113,7 @@ class _ScorePageState extends State<ScorePage> {
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState(() {
+        currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
         if(json.decode(rawData.body)['code']=='SUCCESS'){
           scoreList = json.decode(rawData.body)['result'] as List;
           isLoading = false;
@@ -138,9 +140,9 @@ class _ScorePageState extends State<ScorePage> {
      );
   }
 
-
   Widget _buildScoreItem(rowData) {
     DemoLocalization lang = DemoLocalization.of(context);
+    String forSemesterName= lang.tr('FOR_SEMESTER');
      return new Container(
         margin: EdgeInsets.only(bottom: 10.0),
         decoration: new BoxDecoration(
@@ -169,13 +171,16 @@ class _ScorePageState extends State<ScorePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
-                height: 110.0,
-                padding: EdgeInsets.all(5.0),
-                color: Color(0xff07548f),
-                child: _rowTitleScore(rowData['for_month'],rowData['academicYear'].toString(),Image.asset("images/schedule.png",width:40.0),20.0),
+              Expanded(
+                flex: 1,
+                child:Container(
+                  padding: EdgeInsets.all(5.0),
+                  color: Color(0xff07548f),
+                  child: _rowTitleScore(rowData['for_month'],forSemesterName+rowData['forSemesterId'].toString(),rowData['academicYear'].toString(),Image.asset("images/score.png",width:40.0),20.0),
+                )
               ),
               Expanded(
+                flex: 2,
                 child: Padding(padding: EdgeInsets.only(left: 10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,15 +190,16 @@ class _ScorePageState extends State<ScorePage> {
                         alignment: FractionalOffset.topRight,
                         child:  Icon(Icons.more_horiz,size: 22.0,color:Colors.black45),
                       ),
-                      _rowScoreType(lang.tr('Total Score'),rowData['totalScore'].toString(),14.0),
-                      _rowScoreType(lang.tr('Score Average'),rowData['totalAverage'].toString(),14.0),
-                      _rowScoreType(lang.tr('MentionGrade'),rowData['metionGrade'].toString(),14.0),
-                      _rowScoreType(lang.tr('Mention'),rowData['mention'].toString(),14.0),
-                      _rowScoreType(lang.tr('Result'),lang.tr(rowData['restultStatus'].toString()),14.0),
+                      _rowScoreType(lang.tr('Total Score'),rowData['totalScore'].toString()),
+                      _rowScoreType(lang.tr('Score Average'),rowData['totalAverage'].toString()),
+                      _rowScoreType(lang.tr('MentionGrade'),rowData['metionGrade'].toString()),
+                      _rowScoreType(lang.tr('Mention'),rowData['mention'].toString()),
+                      _rowScoreType(lang.tr('Result'),lang.tr(rowData['restultStatus'].toString())),
                       Container(
                         alignment: Alignment.bottomRight,
                         child: Text(lang.tr("Rank")+" "+rowData['rank'].toString(),style: TextStyle(
-                            fontSize: 16.0,color:Colors.red.shade700,fontWeight: FontWeight.w600),),
+                          fontFamily: currentFont,
+                          fontSize: 14.0,color:Colors.red.shade700,fontWeight: FontWeight.w600),),
                       )
                     ]
                   )
@@ -206,21 +212,30 @@ class _ScorePageState extends State<ScorePage> {
   }
 
 
-  Widget _rowTitleScore(forMonth,year,Image image, double fontSize){
+  Widget _rowTitleScore(forMonth,forSemester,year,Image image, double fontSize){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children:[
           image,
           Text(forMonth, style:TextStyle(
-            fontFamily: 'Montserrat',
+            fontFamily: currentFont,
             fontSize: fontSize,
             fontWeight: FontWeight.w600,
             color: Colors.white
             )
           ),
+          SizedBox(height: 5.0),
+          Text(forSemester, style:TextStyle(
+              fontFamily: currentFont,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w600,
+              color: Colors.white
+            )
+          ),
+          SizedBox(height: 10.0),
           Text(year, style:TextStyle(
-            fontFamily: 'Montserrat',
+            fontFamily: currentFont,
             fontSize: 14.0,
             fontWeight: FontWeight.w600,
             color: Colors.white
@@ -231,7 +246,7 @@ class _ScorePageState extends State<ScorePage> {
   }
 
 
-  Widget _rowScoreType(String textData, String priceData,double fontSize){
+  Widget _rowScoreType(String textData, String priceData){
     return new Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.black26,width: 1.0))
@@ -240,8 +255,8 @@ class _ScorePageState extends State<ScorePage> {
         children: [
            Expanded(
              child: Text(textData,style: TextStyle(
-               fontFamily: 'Montserrat',
-               fontSize: fontSize,
+               fontFamily: currentFont,
+               fontSize: 14.0,
                fontWeight: FontWeight.w500,
                color: Color(0xff07548f).withOpacity(0.9))
              )
@@ -250,8 +265,8 @@ class _ScorePageState extends State<ScorePage> {
              child:  Align(
                alignment: Alignment.topRight,
                child: Text(priceData,style: TextStyle(
-                 fontFamily: 'Montserrat',
-                 fontSize: fontSize,
+                 fontFamily: currentFont,
+                 fontSize: 14.0,
                  fontWeight: FontWeight.bold,
                  color: Color(0xff07548f),
                  fontStyle: FontStyle.italic

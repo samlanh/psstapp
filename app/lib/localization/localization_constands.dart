@@ -1,8 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
-
-
 const STRING_LANG_CODE='langaugescode';
 Future<Locale> setLocale(String languageCode) async{
   SharedPreferences _pref = await SharedPreferences.getInstance();

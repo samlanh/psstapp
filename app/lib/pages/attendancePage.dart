@@ -20,6 +20,7 @@ class _AttendancePageState extends State<AttendancePage> {
   List attendanceList = new List();
   List noteList = new List();
   bool isLoading = true;
+  String currentFont='Khmer';
 
   String absent = '0';
   String come = '0';
@@ -49,7 +50,7 @@ class _AttendancePageState extends State<AttendancePage> {
             SizedBox(width: 10.0),
             Text(lang.tr('Attendance'),
               style: TextStyle(
-              fontFamily: 'Montserrat',
+              fontFamily: currentFont,
               fontSize: 18.0,
               color: Colors.white)
             ),
@@ -130,7 +131,9 @@ class _AttendancePageState extends State<AttendancePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text(lang.tr("Total Attendance"),style: TextStyle(fontSize:18.0,color: Colors.white,fontWeight: FontWeight.bold)),
+                          Text(lang.tr("Total Attendance"),style: TextStyle(fontSize:16.0,
+                              color: Colors.white,fontWeight: FontWeight.bold,
+                              fontFamily: currentFont)),
                           SizedBox(height: 5.0),
                           rowSummerData(lang.tr("Year"),academicYear.toString()),
                           rowSummerData(lang.tr("Class"),className.toString()),
@@ -147,7 +150,10 @@ class _AttendancePageState extends State<AttendancePage> {
                           rowSummerData(lang.tr("Permission"),permission.toString()+' '+lang.tr('TIMES')),
                           rowSummerData(lang.tr("Late"),late.toString()+' '+lang.tr('TIMES')),
                           rowSummerData(lang.tr("Early Leave"),earlyLeave.toString()+' '+lang.tr('TIMES')),
-                          Text(lang.tr("Total")+" "+totalAmt.toString()+' '+lang.tr('TIMES'),style: TextStyle(fontSize:18.0,color: Colors.white,fontWeight: FontWeight.bold)),
+                          Text(lang.tr("Total")+" "+totalAmt.toString()+' '+lang.tr('TIMES'),style: TextStyle(
+                            fontSize:16.0,color: Colors.white,fontWeight: FontWeight.bold,
+                            fontFamily: currentFont
+                          )),
                         ]
                       )
                     )
@@ -160,7 +166,9 @@ class _AttendancePageState extends State<AttendancePage> {
                     onPressed: () {
                       _showTermDialog(context);
                     },
-                    label: Text(lang.tr('Attendance Note')),
+                    label: Text(lang.tr('Attendance Note'),style: TextStyle(
+                        fontFamily: currentFont
+                    )),
                     icon: Icon(Icons.person_pin),
                     backgroundColor: Colors.redAccent
                   )
@@ -180,6 +188,7 @@ class _AttendancePageState extends State<AttendancePage> {
     if(rawData.statusCode==200){
       setState(() {
         if(json.decode(rawData.body)['code']=='SUCCESS'){
+          currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
           attendanceList = json.decode(rawData.body)['result']['rsDetail'] as List;
           noteList = json.decode(rawData.body)['result']['rsNote'] as List;
           come = json.decode(rawData.body)['result']['rsSummary']['COME'].toString();
@@ -202,11 +211,16 @@ class _AttendancePageState extends State<AttendancePage> {
      crossAxisAlignment: CrossAxisAlignment.start,
      mainAxisAlignment: MainAxisAlignment.start,
      children: <Widget>[
-       Text(strLabel,style: TextStyle(color: Colors.white,fontSize: 14.0,fontWeight: FontWeight.bold)),
+       Text(strLabel,style: TextStyle(color: Colors.white,
+         fontSize: 14.0,fontWeight: FontWeight.bold,
+         fontFamily: currentFont
+       )),
        Expanded(
          child: Align(
            alignment: Alignment.bottomRight,
-           child: Text(strData,style:TextStyle(color: Colors.white,fontSize: 14.0,fontWeight: FontWeight.bold)
+           child: Text(strData,style:TextStyle(color: Colors.white,fontSize: 14.0,
+               fontWeight: FontWeight.bold,
+               fontFamily: currentFont)
            )
          )
        )
@@ -245,13 +259,17 @@ class _AttendancePageState extends State<AttendancePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  height: 110.0,
-                  padding: EdgeInsets.all(5.0),
-                  color: Color(0xff07548f),
-                  child: _rowTitleAttendance(lang.tr(rowData['dateLabel'].toString()),Image.asset("images/schedule.png",width:40.0),20.0),
+                Expanded(
+                  flex:1,
+                  child: Container(
+                    height: 110.0,
+                    padding: EdgeInsets.all(5.0),
+                    color: Color(0xff07548f),
+                    child: _rowTitleAttendance(lang.tr(rowData['dateLabel'].toString()),Image.asset("images/schedule.png",width:40.0),20.0),
+                  ),
                 ),
                 Expanded(
+                  flex: 2,
                   child: Padding(padding: EdgeInsets.only(left: 10.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,10 +307,10 @@ class _AttendancePageState extends State<AttendancePage> {
         children:[
           image,
           Text(stringData, style:TextStyle(
-              fontFamily: 'Montserrat',
-              fontSize: fontSize,
-              fontWeight: FontWeight.w600,
-              color: Colors.white
+            fontFamily: currentFont,
+            fontSize: fontSize,
+            fontWeight: FontWeight.w600,
+            color: Colors.white
             ))
         ]
     );
@@ -308,7 +326,7 @@ class _AttendancePageState extends State<AttendancePage> {
         children: [
          Expanded(
            child: Text(textData,style: TextStyle(
-             fontFamily: 'Montserrat',
+             fontFamily: currentFont,
              fontSize: fontSize,
              fontWeight: FontWeight.w500,
              color: Color(0xff07548f).withOpacity(0.9)
@@ -319,11 +337,11 @@ class _AttendancePageState extends State<AttendancePage> {
            child: Align(
              alignment: Alignment.topRight,
              child:Text(priceData,style: TextStyle(
-                 fontFamily: 'Montserrat',
-                 fontSize: fontSize,
-                 fontWeight: FontWeight.bold,
-                 color: Color(0xff07548f),
-                 fontStyle: FontStyle.italic
+               fontFamily: currentFont,
+               fontSize: fontSize,
+               fontWeight: FontWeight.bold,
+               color: Color(0xff07548f),
+               fontStyle: FontStyle.italic
              )
              )
            )
@@ -341,7 +359,11 @@ class _AttendancePageState extends State<AttendancePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: EdgeInsets.all(0.0),
-          title: new Text(lang.tr("Attendance Note"),textAlign: TextAlign.center,style: TextStyle(fontSize: 14.0),),
+          title: new Text(lang.tr("Attendance Note"),textAlign: TextAlign.center
+            ,style: TextStyle(
+            fontSize: 14.0,
+            fontFamily: currentFont)
+          ),
           content: Container(
             margin: EdgeInsets.all(5.0),
             height:MediaQuery.of(context).size.height*0.5,
@@ -356,14 +378,16 @@ class _AttendancePageState extends State<AttendancePage> {
               child: ListView.builder (
                   itemCount: noteList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return  _termConditon(noteList[index]);
+                    return  _termCondition(noteList[index]);
                   }
               ),
             )
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text(lang.tr("Close")),
+              child: new Text(lang.tr("Close"),style: TextStyle(
+               fontFamily: currentFont
+              ),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -375,14 +399,16 @@ class _AttendancePageState extends State<AttendancePage> {
   }
 
 
-  Widget _termConditon(rowData){
+  Widget _termCondition(rowData){
     return Container(
       padding: EdgeInsets.all(6.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Text(rowData['title'].toString(),style: TextStyle(fontSize: 12.0,fontFamily: 'Khmer'),)
+          Text(rowData['title'].toString(),style: TextStyle(
+            fontSize: 12.0,
+            fontFamily: currentFont),)
         ],
       ),
     );

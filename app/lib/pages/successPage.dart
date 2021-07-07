@@ -14,7 +14,13 @@ class _SuccessPageState extends State<SuccessPage> {
   bool isLoading = false;
   String wrongLogin='';
   var jsonResponse ;
+  String currentFont='Khmer';
 
+  @override
+  void initState() {
+    currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
+    super.initState();
+  }
 
   final TextEditingController currentPasswordController = new TextEditingController();
   final TextEditingController reTypePasswordController = new TextEditingController();
@@ -25,7 +31,7 @@ class _SuccessPageState extends State<SuccessPage> {
     DemoLocalization lang = DemoLocalization.of(context);
 
     return  Scaffold(
-        resizeToAvoidBottomPadding: false,
+        //resizeToAvoidBottomPadding: false,
           resizeToAvoidBottomInset: false,
           body: SingleChildScrollView(
             child: new Container(
@@ -47,9 +53,13 @@ class _SuccessPageState extends State<SuccessPage> {
                   ),
                 ),
                 child: new Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
                             width: 90,
@@ -66,27 +76,33 @@ class _SuccessPageState extends State<SuccessPage> {
                                   fontSize: 16.0,
                                   color: Colors.white.withOpacity(0.9),
                                   decoration: TextDecoration.none,
-                                  textBaseline: TextBaseline.alphabetic
+                                  textBaseline: TextBaseline.alphabetic,
+                                  fontFamily: currentFont
                               )),
-                          SizedBox(height:100.0),
-                          InkWell(
-                            child: Text(lang.tr('Go Back'),
-                                style: new TextStyle(
-                                    fontSize: 25.0,
-                                    color: Colors.white70.withOpacity(0.9),
-                                    decoration: TextDecoration.none,
-                                    textBaseline: TextBaseline.alphabetic
-                                )),
-                            onTap: (){
-                              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => SettingPage(studentId:widget.studentId,currentLang:widget.currentLang)), (Route<dynamic> route) => false);
-                            },
+                          SizedBox(height:30.0),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(Icons.arrow_forward,size: 30.0,color: Colors.white),
+                              InkWell(
+                                child: Text(lang.tr('Go Back'),
+                                    style: new TextStyle(
+                                        fontSize: 25.0,
+                                        color: Colors.white70.withOpacity(0.9),
+                                        decoration: TextDecoration.none,
+                                        textBaseline: TextBaseline.alphabetic,
+                                        fontFamily: currentFont
+                                    )),
+                                onTap: (){
+                                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => SettingPage(studentId:widget.studentId,currentLang:widget.currentLang)), (Route<dynamic> route) => false);
+                                },
+                              )
+                            ],
                           )
-
-
                         ],
                       ),
                     ),
-
                   ],
                 )
             ),

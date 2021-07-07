@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/main.dart';
 import 'package:app/url_api.dart';
 import 'package:app/localization/localization.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -16,7 +17,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
 
   bool isLoading = false;
-  String currentLang = '2';
+  String currentLang = '1';
   String wrongLogin='';
   SharedPreferences sharedPreferences;
   var jsonResponse ;
@@ -42,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
     DemoLocalization lang = DemoLocalization.of(context);
     Locale _temp;
     return  Scaffold(
-        resizeToAvoidBottomPadding: false,
+        //resizeToAvoidBottomPadding: false,
         resizeToAvoidBottomInset: false,
           body: SingleChildScrollView(
             child: new Container(
@@ -282,12 +283,22 @@ class _LoginPageState extends State<LoginPage> {
   }
  Future studentLogin(String stuId, String password) async {
 
+   OneSignal.shared.init('dfc704ab-e023-4b0b-b030-e300f13b74eb', iOSSettings: {
+     OSiOSSettings.autoPrompt: false,
+     OSiOSSettings.inAppLaunchUrl: true
+   });
+
+   var status = await OneSignal.shared.getPermissionSubscriptionState();
+   var playerId = status.subscriptionStatus.userId;
+
+
      Map data = {
        'studentCode': stuId,
        'password': password,
        'deviceType': '1',
-       'mobileToken': 'asdkfwerqwer',
+       'mobileToken': playerId,
      };
+
     var response = await http.post(StringData.loginUrl,
         body: data);
 

@@ -6,7 +6,6 @@ import 'dart:convert';
 import '../url_api.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-String strDate;
 class SchedulePage extends StatefulWidget {
   final studentId;
   final currentLang,title;
@@ -19,6 +18,7 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   bool isLoading = true;
   List scheduleList = new List();
+  String currentFont='Khmer';
   static DateTime current = DateTime.now();
   String currentDate = DateFormat('EEEE').format(current);
   String dayNumber ;
@@ -62,7 +62,7 @@ class _SchedulePageState extends State<SchedulePage> {
             SizedBox(width: 10.0),
             Text(lang.tr(widget.title),
               style: TextStyle(
-                fontFamily: 'Montserrat',
+                fontFamily: currentFont,
                 fontSize: 18.0,
                 color: Colors.white
               )
@@ -175,7 +175,11 @@ class _SchedulePageState extends State<SchedulePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Icon(Icons.today,color: Colors.white70,size: 16.0),
-              Text(day, style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600))
+              Text(day, style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontFamily: currentFont,
+              ))
             ],
           )
         ),
@@ -190,6 +194,7 @@ class _SchedulePageState extends State<SchedulePage> {
     if(rawData.statusCode==200){
       if(json.decode(rawData.body)['code']=='SUCCESS'){
         setState((){
+          currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
           scheduleList = json.decode(rawData.body)['result']['arrStudyValue'] as List;
           isLoading = false;
         });
@@ -259,7 +264,7 @@ class _SchedulePageState extends State<SchedulePage> {
           iconType,
           Text(subjectName, style:
           TextStyle(
-            fontFamily: 'Montserrat',
+            fontFamily: currentFont,
             fontWeight: FontWeight.w600,
             color: Colors.white)
           )
@@ -274,7 +279,7 @@ class _SchedulePageState extends State<SchedulePage> {
           iconType,
          Expanded(
            child: Text(textLabel,style: TextStyle(
-             fontFamily: 'Montserrat',
+             fontFamily: currentFont,
              fontSize: 14.0,
              fontWeight: FontWeight.w500,
              color: Colors.black.withOpacity(0.7)
@@ -282,33 +287,33 @@ class _SchedulePageState extends State<SchedulePage> {
            ),
          ),
          Expanded(
-            child:  isCall==1 ?  Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                    onTap:() async{
-                      if (await canLaunch("tel://"+stringValue)) {//"tel://+85570418002"
-                        await launch("tel://"+stringValue);
-                      }
-                    },
-                    child: Text(stringValue,style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black.withOpacity(0.7),
-                        fontStyle: FontStyle.italic
-                    ),
-                    )
-                )
-            ): Align(
-                alignment: Alignment.topRight,
-                child: Text(stringValue,style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black.withOpacity(0.7),
-                    fontStyle: FontStyle.italic
-                ))
+          child:  isCall==1 ?  Align(
+            alignment: Alignment.topRight,
+            child: GestureDetector(
+              onTap:() async{
+                if (await canLaunch("tel://"+stringValue)) {//"tel://+85570418002"
+                  await launch("tel://"+stringValue);
+                }
+              },
+              child: Text(stringValue,style: TextStyle(
+                fontFamily: currentFont,
+                fontSize: 14.0,
+                fontWeight: FontWeight.w500,
+                color: Colors.black.withOpacity(0.7),
+                fontStyle: FontStyle.italic
+               ),
+              )
             )
+          ): Align(
+            alignment: Alignment.topRight,
+            child: Text(stringValue,style: TextStyle(
+              fontFamily: currentFont,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w500,
+              color: Colors.black.withOpacity(0.7),
+              fontStyle: FontStyle.italic
+            ))
+          )
          )
         ]
       ),

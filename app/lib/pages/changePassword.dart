@@ -19,11 +19,18 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool isLoading = false;
   String wrongLogin='';
   var jsonResponse ;
+  String currentFont='Khmer';
 
   final TextEditingController currentPasswordController = new TextEditingController();
   final TextEditingController reTypePasswordController = new TextEditingController();
   final TextEditingController newPasswordController = new TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  getCurrentLang(){
+    setState(() {
+      currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +43,9 @@ class _ChangePasswordState extends State<ChangePassword> {
             elevation: 0,
             automaticallyImplyLeading: false,
             title: InkWell(
-              child: Text(lang.tr("Cancel"),style:TextStyle(fontSize: 18.0)),
+              child: Text(lang.tr("Cancel"),style:TextStyle(
+                  fontSize: 18.0,
+                  fontFamily: currentFont)),
               onTap: (){
                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => SettingPage(studentId:widget.studentId,currentLang:widget.currentLang)), (Route<dynamic> route) => false);
               },
@@ -78,15 +87,17 @@ class _ChangePasswordState extends State<ChangePassword> {
                     flex: 3,
                     child: Column(
                       children: <Widget>[
-                        Icon(Icons.blur_circular,size: 120.0,color: Colors.white70),
+                        Image.asset('images/password.png',
+                          width:MediaQuery.of(context).size.width*0.3
+                        ),
                         SizedBox(height: 15.0),
-
                         new Text(lang.tr('CHANGE_PASSWORD'),
                           style: new TextStyle(
-                              fontSize: 22.0,
+                              fontSize: 18.0,
                               color: Colors.white.withOpacity(0.9),
                               decoration: TextDecoration.none,
-                              textBaseline: TextBaseline.alphabetic
+                              textBaseline: TextBaseline.alphabetic,
+                              fontFamily: currentFont
                           )),
                         SizedBox(height:20.0),
                         new Text(wrongLogin,
@@ -119,8 +130,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                               return null;
                             },
                             decoration: InputDecoration(
-                              hintText: lang.tr("CURRENT_PASSWORD"),hintStyle: TextStyle(color:Color(0xffcfdfe8),fontWeight:
-                              FontWeight.bold,fontStyle:FontStyle.italic),
+                              hintText: lang.tr("CURRENT_PASSWORD"),hintStyle: TextStyle(color:Color(0xffcfdfe8),
+                                fontWeight:FontWeight.bold,
+                                fontStyle:FontStyle.italic,
+                                fontFamily: currentFont),
                               contentPadding: EdgeInsets.all(10.0),
                               border: new OutlineInputBorder(
                                 borderSide: const BorderSide(color: Colors.white, width: 1.0),
@@ -153,8 +166,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                             ),
                             cursorColor: Colors.white,
                             decoration: InputDecoration(
-                              hintText: lang.tr("NEW_PASSWORD"),hintStyle: TextStyle(color:Color(0xffcfdfe8),fontWeight:
-                            FontWeight.bold,fontStyle:FontStyle.italic),
+                              hintText: lang.tr("NEW_PASSWORD"),hintStyle: TextStyle(
+                                color:Color(0xffcfdfe8),fontWeight:FontWeight.bold,
+                                fontStyle:FontStyle.italic,
+                                fontFamily: currentFont),
                               contentPadding: EdgeInsets.all(10.0),
                               border: new OutlineInputBorder(
                                 borderSide: const BorderSide(color: Colors.white, width: 1.0),
@@ -190,8 +205,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                             ),
                             cursorColor: Colors.white,
                             decoration: InputDecoration(
-                              hintText: lang.tr("RETYPE_PASSWORD"),hintStyle: TextStyle(color:Color(0xffcfdfe8),fontWeight:
-                              FontWeight.bold,fontStyle:FontStyle.italic),
+                              hintText: lang.tr("RETYPE_PASSWORD"),hintStyle: TextStyle(
+                                color:Color(0xffcfdfe8),fontWeight:
+                                FontWeight.bold,fontStyle:FontStyle.italic,
+                                fontFamily: currentFont),
                               contentPadding: EdgeInsets.all(10.0),
                               border: new OutlineInputBorder(
                                 borderSide: const BorderSide(color: Colors.white, width: 1.0),
@@ -221,8 +238,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                               alignment: Alignment.center,
                               children: <Widget>[
                                 Text(lang.tr("CHANGE_PASSWORD"),
-                                  style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,
-                                         fontSize: 18.0
+                                  style: TextStyle(color:Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0,
+                                      fontFamily: currentFont
                                   ),
                                 ),
                                 Container(

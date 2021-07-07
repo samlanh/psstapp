@@ -36,7 +36,7 @@ class _CoursePageState extends State<CoursePage> {
         centerTitle: true,
         title: Row(
           children: <Widget>[
-            Image.asset('images/payment.png',height: 50.0),
+            Image.asset('images/studenthistory.png',height: 50.0),
             SizedBox(width: 10.0),
             Text(lang.tr(widget.title.toString()),
               style: TextStyle(
@@ -139,7 +139,7 @@ class _CoursePageState extends State<CoursePage> {
         child: InkWell(
           onTap:(){
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => CourseDetailsPage(rowData:rowCourse)
+                builder: (context) => CourseDetailsPage(title:rowCourse['title'].toString(),rowData:rowCourse)
             ));
           },
           child: Row(
@@ -160,7 +160,7 @@ class _CoursePageState extends State<CoursePage> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          Text(lang.tr('COURSE'),style: TextStyle(fontSize: 16.0)),
+//                          Text(lang.tr('COURSE'),style: TextStyle(fontSize: 16.0)),
                           Expanded(
                             child: Align(
                                 alignment: FractionalOffset.topRight,

@@ -16,6 +16,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   List rsProfileList = new List();
   bool isLoading = true;
+  String currentFont='Khmer';
 
   @override
   void initState() {
@@ -31,7 +32,9 @@ class _ProfilePageState extends State<ProfilePage> {
         appBar: AppBar(
           centerTitle: true,
           elevation: 0.0,
-          title: Text(lang.tr("Student Profile")),
+          title: Text(lang.tr("Student Profile"),
+          style: TextStyle(fontFamily: currentFont,
+          fontSize: 18.0)),
           flexibleSpace: Container(
             decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -167,6 +170,7 @@ class _ProfilePageState extends State<ProfilePage> {
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState((){
+        currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
         if(json.decode(rawData.body)['code']=='SUCCESS'){
           rsProfileList = json.decode(rawData.body)['result'] as List;
           isLoading = false;
@@ -195,16 +199,20 @@ class _ProfilePageState extends State<ProfilePage> {
       padding: EdgeInsets.only(left:5.0,right: 5.0,top:1.0,bottom:1.0),
       margin: EdgeInsets.only(left: 15.0,right: 10.0),
       decoration: BoxDecoration(
-//        color:Colors.red,
         border: Border(bottom: BorderSide(color: Color(0xffededed),width: 1.0))
       ),
       child: Row(
         children: <Widget>[
           Expanded(
-            child: Text(labelData,style: TextStyle(color: Color(0xff054798),fontWeight: FontWeight.w600,fontSize:14.0,fontFamily: 'Khmer')),
+            child: Text(labelData,style: TextStyle(color: Color(0xff054798),fontWeight: FontWeight.w600,fontSize:14.0,
+                fontFamily: currentFont)),
           ),
           Expanded(
-            child: Text(lableValue,style: TextStyle(color: Color(0xff092952))),
+            child: Text(lableValue,style: TextStyle(
+                color: Color(0xff092952),
+              fontFamily: currentFont,
+              fontSize: 14.0
+            )),
           )
         ],
       )

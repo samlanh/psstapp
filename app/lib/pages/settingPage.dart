@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../url_api.dart';
 import 'package:app/pages/changePassword.dart';
-import 'package:app/main.dart';
+import 'package:app/pages/addNewAccount.dart';
 
 class SettingPage extends StatefulWidget {
 
@@ -21,6 +21,7 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   List rsProfileList = new List();
   bool isLoading = true;
+  String currentFont='Khmer';
 
   @override
   void initState() {
@@ -37,9 +38,10 @@ class _SettingPageState extends State<SettingPage> {
         elevation: 0.0,
         automaticallyImplyLeading: false,
         title: InkWell(
-          child: Text(lang.tr("Cancel"),style:TextStyle(fontSize: 18.0)),
+          child: Text(lang.tr("Cancel"),style:TextStyle(
+              fontSize: 16.0,fontFamily: currentFont)),
           onTap: (){
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => HomeApp()), (Route<dynamic> route) => false);
+            Navigator.pop(context);
           },
         ),
         flexibleSpace: Container(
@@ -50,7 +52,8 @@ class _SettingPageState extends State<SettingPage> {
               colors:<Color>[
                 Color(0xff054798),
                 Color(0xff009ccf),
-              ])
+              ]
+            )
           ),
         )
       ),
@@ -89,7 +92,25 @@ class _SettingPageState extends State<SettingPage> {
                         rowStudentData(lang.tr("NAME_IN_KHMER"),rsProfileList[0]['stu_khname'].toString()),
                         rowStudentData(lang.tr("NAME_IN_LATIN"), rsProfileList[0]['name_englsih'].toString()),
                         rowStudentData(lang.tr("GENDER"),  rsProfileList[0]['genderTitle'].toString()),
-                        rowStudentTitle(Icon(Icons.format_align_center,color: Color(0xff07548f)),lang.tr("ភាសា")),
+                        FlatButton.icon(
+                            onPressed:(){
+//                              Navigator.push(context,MaterialPageRoute(builder: (context) => AddNewAccount()));
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => AddNewAccount()),
+                              );
+                            },
+                            color: Colors.red,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                side: BorderSide(color: Colors.red)
+                            ),
+                            icon: Icon(Icons.person_add,color: Colors.white),
+                            label: Text(lang.tr("ADD_MORE_ACCOUNT"),style:TextStyle(
+                              color:Colors.white,fontSize: 16.0,
+                              fontFamily: currentFont
+                            ))
+                        ),
                         Container(
                           padding: EdgeInsets.all(10.0),
                           child: MaterialButton(
@@ -105,14 +126,17 @@ class _SettingPageState extends State<SettingPage> {
                               alignment: Alignment.center,
                               children: <Widget>[
                                 Text(lang.tr("CHANGE_PASSWORD"),
-                                  style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,
+                                  style: TextStyle(color:Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: currentFont,
                                       fontSize: 18.0
                                   ),
                                 ),
                                 Container(
                                   alignment: FractionalOffset.centerRight,
                                   child: Icon(Icons.arrow_forward_ios,color: Colors.white,size: 28.0),
-                                )
+                                ),
+
                               ],
                             ),
                             onPressed:(){
@@ -173,13 +197,12 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-
-
   _getJsonProfile() async{
     final String urlApi = StringData.studentProfile+'&stu_id='+widget.studentId+'&currentLang='+widget.currentLang;
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState((){
+        currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
         if(json.decode(rawData.body)['code']=='SUCCESS'){
           rsProfileList = json.decode(rawData.body)['result'] as List;
           isLoading = false;
@@ -199,11 +222,15 @@ class _SettingPageState extends State<SettingPage> {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: Text(labelData,style: TextStyle(color: Color(0xff054798),fontWeight: FontWeight.w600,fontSize:14.0,fontFamily: 'Khmer')),
+            child: Text(labelData,style: TextStyle(color: Color(0xff054798),
+                fontWeight: FontWeight.w600,fontSize:14.0,
+                fontFamily: currentFont)),
           ),
           Expanded(
             child: Container(
-              child: Text(labelValue,style: TextStyle(color: Color(0xff092952))),
+              child: Text(labelValue,style: TextStyle(
+                  color: Color(0xff092952),
+                  fontFamily: currentFont)),
             )
           )
         ]

@@ -18,7 +18,6 @@ class _SplashScreenpageState extends State<SplashScreenpage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setTime(1000);
   }

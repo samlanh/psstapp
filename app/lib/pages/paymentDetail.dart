@@ -17,6 +17,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
 
    List paymentListDetail = new List();
    bool isLoading = true;
+   String currentFont='Khmer';
 
   @override
   void initState() {
@@ -37,8 +38,8 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
             SizedBox(width: 10.0),
             Text((lang.tr("RECEIPT No"))+" "+widget.rowPayment['receipt_number'],
               style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 18.0,
+                fontFamily: currentFont,
+                fontSize: 16.0,
                 color: Colors.white
               )
             ),
@@ -105,9 +106,11 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(lang.tr("RECEIPT No")+widget.rowPayment['receipt_number'],style: TextStyle(color: Colors.white.withOpacity(0.9),
-                              fontWeight: FontWeight.bold)
-                            ),
+//                            Text(lang.tr("RECEIPT No")+widget.rowPayment['receipt_number'],
+//                                style: TextStyle(color: Colors.white.withOpacity(0.9),
+//                                fontWeight: FontWeight.bold,
+//                                fontFamily: currentFont,)
+//                            ),
                             _rowPaymentSummary(lang.tr("Payment Method"),widget.rowPayment['paymentMethod']),
                             _rowPaymentSummary(lang.tr("Paid Date"),widget.rowPayment['createDate']),
                             _rowPaymentSummary(lang.tr("Cashier"),widget.rowPayment['byUser'])
@@ -134,7 +137,9 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                                     color: Colors.white,
                                     border: Border(top: BorderSide(color: Colors.white,width: 2.0))
                                 ),
-                                child: Text(lang.tr("Paid")+" \$"+widget.rowPayment['paidAmount'],style: TextStyle(color: Colors.redAccent,fontWeight: FontWeight.bold)),
+                                child: Text(lang.tr("Paid")+" \$"+widget.rowPayment['paidAmount'],
+                                    style: TextStyle(color: Colors.redAccent,fontWeight: FontWeight.bold,
+                                      fontFamily: currentFont)),
                               )
                             ]
                           )
@@ -155,6 +160,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState(() {
+        currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
         if(json.decode(rawData.body)['code']=='SUCCESS'){
           paymentListDetail = json.decode(rawData.body)['result'] as List;
           isLoading = false;
@@ -225,6 +231,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                         alignment: Alignment.bottomRight,
                         child: Text(lang.tr("Total")+" : \$ "+rowData['paidAmount'], style: TextStyle(
                           fontSize: 14.0,
+                          fontFamily: currentFont,
                           color: Colors.red.shade700,
                           fontWeight: FontWeight.w600))
                       )
@@ -250,7 +257,8 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
           text: serviceCate,
           style: TextStyle(
             fontSize: 10,
-            color: Colors.black38
+            color: Colors.black38,
+            fontFamily: currentFont,
           )
         )
       ],
@@ -266,7 +274,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
         children: [
           Expanded(
             child: Text(textData,style: TextStyle(
-              fontFamily: 'Montserrat',
+               fontFamily: currentFont,
               fontSize: fontSize,
               fontWeight: FontWeight.w400,
               color: Color(0xff07548f).withOpacity(0.9)
@@ -277,7 +285,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
             child:  Align(
               alignment: Alignment.topRight,
               child: Text(priceData,style: TextStyle(
-                fontFamily: 'Montserrat',
+                fontFamily: currentFont,
                 fontSize: fontSize,
                 fontWeight: FontWeight.w500,
                 color: Color(0xff07548f),
@@ -297,8 +305,8 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
         children: [
           Container(
             child: Text(textData,style: TextStyle(
-              fontFamily: 'Montserrat',
-              fontSize: 13.0,
+              fontFamily: currentFont,
+              fontSize: 12.0,
               fontWeight: FontWeight.bold,
               color: Colors.white.withOpacity(0.8)
               )
@@ -308,7 +316,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
             child:  Align(
               alignment: Alignment.topRight,
               child: Text(priceData,style: TextStyle(
-                fontFamily: 'Montserrat',
+                fontFamily: currentFont,
                 fontSize: 12.0,
                 fontWeight: FontWeight.w500,
                 color: Colors.white.withOpacity(0.8),

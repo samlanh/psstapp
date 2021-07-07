@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../url_api.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
 
 class NotificationPage extends StatefulWidget {
   final studentId,currentLang;
@@ -15,6 +16,7 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   bool isLoading = true;
   List notificationList = new List();
+  String currentFont='Khmer';
 
   @override
   void initState() {
@@ -34,7 +36,8 @@ class _NotificationPageState extends State<NotificationPage> {
           children: <Widget>[
             Icon(Icons.notifications_active,color: Colors.white,size: 30.0,),
             SizedBox(width: 5.0,),
-            Text(lang.tr("Notifications")),
+            Text(lang.tr("Notifications"),style: TextStyle(fontFamily: currentFont,
+            fontSize: 18.0)),
           ],
         ),
         flexibleSpace: Container(
@@ -85,10 +88,12 @@ class _NotificationPageState extends State<NotificationPage> {
     );
   }
   _getJsonNotification() async{
-    final String urlApi = StringData.notification+'&stu_id='+widget.studentId+'&currentLang='+widget.currentLang;
+    //final String urlApi = StringData.notification+'&stu_id='+widget.studentId+'&currentLang='+widget.currentLang;
+    final String urlApi = StringData.notification+'&currentLang='+widget.currentLang;
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState((){
+        currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
         if(json.decode(rawData.body)['code']=='SUCCESS'){
             notificationList = json.decode(rawData.body)['result'] as List;
           isLoading = false;
@@ -122,11 +127,29 @@ class _NotificationPageState extends State<NotificationPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children:[
-                      Text(rowData['title'].toString(),overflow: TextOverflow.ellipsis,style: TextStyle(fontFamily: 'Khmer',color: Colors.black87,fontWeight:FontWeight.w600)),
+                      Text(rowData['title'].toString(),overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: currentFont,
+                          color: Colors.black87,
+                          fontWeight:FontWeight.w600,
+                        )),
                        Html(
                       data: rowData['description'].toString(),
+                           style: {
+                             "p": Style(
+                                 fontSize: FontSize(14.0),
+                                 padding: EdgeInsets.all(0.0),
+                                 fontFamily: 'Khmer',
+                                 margin: EdgeInsets.all(0.0)),
+                             "h1": Style(
+                                 fontSize: FontSize(14.0),
+                                 padding: EdgeInsets.all(0.0),
+                                 fontFamily: 'Khmer',
+                                 margin: EdgeInsets.all(0.0)),
+                           }
                       ),
-                      Text(rowData['ShowDate'].toString(),style: TextStyle(color: Colors.black54,fontSize:11.0)),
+                      Text(rowData['ShowDate'].toString(),style: TextStyle(
+                          color: Colors.black54,fontSize:11.0)),
                     ]
                 ),
               )

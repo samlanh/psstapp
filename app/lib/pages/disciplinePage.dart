@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter_html/flutter_html.dart';
 import '../url_api.dart';
 import 'package:app/pages/disciplineDetailPage.dart';
+import 'package:flutter_html/style.dart';
 
 class DisciplinePagePage extends StatefulWidget {
   final String studentId;
@@ -19,7 +20,8 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
   List disciplineList = new List();
   List disciplineNoteList = new List();
   bool isLoading = true;
-
+  String currentFont='Khmer';
+  
   String moderate = '0';
   String minor = '0';
   String major = '0';
@@ -31,8 +33,8 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
 
   @override
   void initState(){
-    super.initState();
     _getJsonDiscipline();
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
@@ -50,8 +52,8 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
             SizedBox(width: 10.0),
             Text(lang.tr('Discipline'),
               style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 18.0,
+                fontFamily: currentFont,
+                fontSize: 16.0,
                 color: Colors.white)
             )
           ]
@@ -116,7 +118,6 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
                 ])
             ),
               child: Column(
-
                 children: <Widget>[
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,7 +157,9 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
                       onPressed: () {
                         _showTermDialog(context);
                       },
-                      label: Text(lang.tr('Discipline Note')),
+                      label: Text(lang.tr('Discipline Note'),style: TextStyle(
+                        fontFamily: currentFont
+                      ),),
                       icon: Icon(Icons.person_pin),
                       backgroundColor: Colors.redAccent,
                     ),
@@ -164,7 +167,6 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
                 ],
               )
             ),
-
         ],
       )
     );
@@ -176,10 +178,10 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState(() {
+        currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
         if(json.decode(rawData.body)['code']=='SUCCESS'){
           disciplineList = json.decode(rawData.body)['result']['rsDetail'] as List;
           disciplineNoteList = json.decode(rawData.body)['result']['rsNote'] as List;
-
           minor = json.decode(rawData.body)['result']['rsSummary']['Minor'].toString();
           moderate = json.decode(rawData.body)['result']['rsSummary']['MODERATE'].toString();
           major = json.decode(rawData.body)['result']['rsSummary']['MAJOR'].toString();
@@ -199,11 +201,16 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
        crossAxisAlignment: CrossAxisAlignment.start,
        mainAxisAlignment: MainAxisAlignment.start,
        children: <Widget>[
-         Text(strLabel,style: TextStyle(color: Colors.white,fontSize: 14.0,fontWeight: FontWeight.bold)),
+         Text(strLabel,style: TextStyle(color: Colors.white,
+             fontSize: 14.0,fontWeight: FontWeight.bold,
+             fontFamily: currentFont)),
          Expanded(
            child: Align(
              alignment: Alignment.bottomRight,
-             child: Text(strData,style:TextStyle(color: Colors.white,fontSize: 14.0,fontWeight: FontWeight.bold)
+             child: Text(strData,style:TextStyle(
+               color: Colors.white,
+               fontSize: 14.0,fontWeight: FontWeight.bold,
+               fontFamily: currentFont)
              ),
            )
          )
@@ -244,13 +251,17 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
+              Expanded(
+              flex: 1,
+              child:Container(
                 height: 110.0,
                 padding: EdgeInsets.all(5.0),
                 color: Color(0xff07548f),
                 child: _rowTitleDiscipline(lang.tr(rowData['dateLabel'].toString()),Image.asset("images/schedule.png",width:40.0),20.0),
+                )
               ),
               Expanded(
+                flex: 3,
                 child: Padding(padding: EdgeInsets.only(left: 10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,7 +278,11 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
                       Container(
                         alignment: Alignment.bottomRight,
                         child: Text(lang.tr("Total")+" : "+rowData['TOTAL_ATTRECORD'].toString()+' '+lang.tr('TIMES'),style: TextStyle(
-                            fontSize: 14.0,color:Colors.red.shade700,fontWeight: FontWeight.w600),),
+                          fontSize: 14.0,color:Colors.red.shade700,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: currentFont
+                         ),
+                        ),
                       )
                     ]
                   )
@@ -287,7 +302,7 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
         children:[
           image,
           Text(stringData, style:TextStyle(
-            fontFamily: 'Montserrat',
+            fontFamily: currentFont,
             fontSize: fontSize,
             fontWeight: FontWeight.w600,
             color: Colors.white
@@ -306,7 +321,7 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
         children: [
          Expanded(
            child: Text(textData,style: TextStyle(
-             fontFamily: 'Montserrat',
+             fontFamily: currentFont,
              fontSize: fontSize,
              fontWeight: FontWeight.w500,
              color: Color(0xff07548f).withOpacity(0.9)
@@ -317,7 +332,7 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
            child:  Align(
              alignment: Alignment.topRight,
              child: Text(priceData,style: TextStyle(
-               fontFamily: 'Montserrat',
+               fontFamily: currentFont,
                fontSize: fontSize,
                fontWeight: FontWeight.bold,
                color: Color(0xff07548f),
@@ -331,7 +346,6 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
     );
   }
 
-
   void _showTermDialog(BuildContext context){
 
     DemoLocalization lang = DemoLocalization.of(context);
@@ -341,7 +355,9 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: EdgeInsets.all(0.0),
-          title: new Text(lang.tr("Discipline Note"),textAlign: TextAlign.center,style: TextStyle(fontSize: 14.0,color: Colors.redAccent)),
+          title: new Text(lang.tr("Discipline Note"),textAlign: TextAlign.center,style: TextStyle(
+              fontSize: 14.0,color: Colors.redAccent,
+              fontFamily: currentFont)),
           content: Container(
               margin: EdgeInsets.all(5.0),
               height:MediaQuery.of(context).size.height*0.5,
@@ -363,7 +379,9 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text(lang.tr("Close")),
+              child: new Text(lang.tr("Close"),style: TextStyle(
+                  fontFamily: currentFont
+              )),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -382,11 +400,25 @@ class _DisciplinePagePageState extends State<DisciplinePagePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Text(rowData['title'].toString(),style: TextStyle(fontSize: 14.0,fontFamily: 'Khmer',fontWeight: FontWeight.bold)),
+          Text(rowData['title'].toString(),style: TextStyle(
+              fontSize: 14.0,fontFamily: currentFont,
+              fontWeight: FontWeight.bold)),
           Padding(
             padding: EdgeInsets.only(left: 10.0),
             child:Html(
               data: rowData['description'].toString(),
+                style: {
+                  "p": Style(
+                      fontSize: FontSize(14.0),
+                      padding: EdgeInsets.all(0.0),
+                      fontFamily: currentFont,
+                      margin: EdgeInsets.all(0.0)),
+                  "h1": Style(
+                      fontSize: FontSize(14.0),
+                      padding: EdgeInsets.all(0.0),
+                      fontFamily: currentFont,
+                      margin: EdgeInsets.all(0.0)),
+                }
             )
           )
         ],

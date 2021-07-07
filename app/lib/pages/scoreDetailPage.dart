@@ -3,6 +3,7 @@ import 'package:app/localization/localization.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../url_api.dart';
+import 'package:app/functions/download.dart';
 //import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 
@@ -17,7 +18,7 @@ class ScoreDetailPage extends StatefulWidget {
 class _ScoreDetailPageState extends State<ScoreDetailPage> {
   List scoreList = new List();
   bool isLoading = true;
-
+  String currentFont='Khmer';
 
   @override
   void initState(){
@@ -41,16 +42,10 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
             SizedBox(width: 10.0),
             Text(lang.tr('Score')+'('+widget.rowData['for_month'].toString()+')',
               style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 18.0,
+                fontFamily: currentFont,
+                fontSize: 16.0,
                 color: Colors.white)
             ),
-//                  FlatButton.icon(
-//                      onPressed: () async {
-//                        debugPrint('here');
-//                      }
-//                      ,icon: Icon(Icons.cloud_download), label: Text("Download")
-//                  )
           ],
         ),
         flexibleSpace: Container(
@@ -145,26 +140,57 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
                             _rowSummerData(lang.tr('Mention'),widget.rowData['mention'].toString()),
                             _rowSummerData(lang.tr('Result'),lang.tr(widget.rowData['restultStatus'].toString())),
                             _rowSummerData(lang.tr("Rank"),widget.rowData['rank'].toString()),
-
                           ],
                         )
                       )
                     ]
                   ),
-                  FlatButton.icon(
-                    onPressed:(){
-//                      Navigator.push(context,MaterialPageRoute(builder: (context) => AppVideoPage(currentLang:currentLang)));
-                    },
-                    color: Colors.red,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        side: BorderSide(color: Colors.red)
-                    ),
-                    icon: Icon(Icons.file_download,color: Colors.white),
-                    label: Text(lang.tr("DOWNLOAD"),style:TextStyle(
-                      color:Colors.white,fontSize: 16.0,
-                    ))
-                  ),
+                  Wrap(
+//                  crossAxisAlignment: WrapCrossAlignment.start,
+//                  verticalDirection: VerticalDirection.down,
+                    direction: Axis.horizontal,
+                    children: <Widget>[
+                      FlatButton.icon(
+                        onPressed:(){
+                          Navigator.push(context,MaterialPageRoute(builder: (context) =>DownloadAndSharePage(
+                            stuId:widget.studentId,groupId:widget.rowData['group_id'],examType: widget.rowData['exam_type'],forSemester: widget.rowData['forSemesterId'],
+                            forMonth: widget.rowData['forMonthId'])
+                          ));
+                        },
+                        color: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          side: BorderSide(color: Colors.red)
+                        ),
+                        icon: Icon(Icons.file_download,color: Colors.white),
+                        label: Text(lang.tr("RESULT_BY_CLASS"),
+                          style:TextStyle(
+                          color:Colors.white,fontSize: 14.0,
+                          fontFamily: currentFont
+                        ))
+                      ),
+                      SizedBox(width: 5.0),
+                      FlatButton.icon(
+                          onPressed:(){
+                            Navigator.push(context,MaterialPageRoute(builder: (context) =>DownloadAndSharePage(
+                              stuId:widget.studentId,groupId:widget.rowData['group_id'],examType: widget.rowData['exam_type'],forSemester: widget.rowData['forSemesterId'],
+                              forMonth: widget.rowData['forMonthId'])
+                            ));
+                          },
+                          color: Colors.red,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              side: BorderSide(color: Colors.red)
+                          ),
+                          icon: Icon(Icons.file_download,color: Colors.white),
+                          label: Text(lang.tr("TRANSCRIPT"),style:TextStyle(
+                            color:Colors.white,fontSize: 14.0,
+                            fontFamily: currentFont
+                          ))
+                      ),
+                    ],
+                  )
+
                 ],
               )
             ),
@@ -180,6 +206,7 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
     http.Response rawData = await http.get(urlApi);
     if(rawData.statusCode==200){
       setState((){
+        currentFont = (Localizations.localeOf(context).languageCode=='km')?'Khmer':'English';
         if(json.decode(rawData.body)['code']=='SUCCESS'){
           scoreList = json.decode(rawData.body)['result']['rowDetail'] as List;
           isLoading = false;
@@ -194,18 +221,24 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Text(strLabel,style: TextStyle(color: Colors.white,fontSize: 12.0,fontWeight: FontWeight.bold)),
+        Text(strLabel,style: TextStyle(
+          color: Colors.white,fontSize: 12.0,
+          fontWeight: FontWeight.bold,
+          fontFamily: currentFont,
+        )),
         Expanded(
           child: Align(
             alignment: Alignment.bottomRight,
-            child: Text(strData,style:TextStyle(color: Colors.white,fontSize: 14.0,fontWeight: FontWeight.bold)
+            child: Text(strData,
+                style:TextStyle(color: Colors.white,fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: currentFont)
             ),
           )
         )
       ],
     );
   }
-
 
   Widget _buildScoreItem(rowData) {
     DemoLocalization lang = DemoLocalization.of(context);
@@ -241,9 +274,9 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children:[
-                    _rowScoreType(lang.tr('Subject'),rowData['subjecTitle'].toString(),16.0),
-                    _rowScoreType(lang.tr('Total Score'),rowData['score'].toString(),14.0),
-                    _rowScoreType(lang.tr('Mention'),rowData['mention'].toString(),14.0),
+                    _rowScoreType(lang.tr('Subject'),rowData['subjecTitle'].toString()),
+                    _rowScoreType(lang.tr('Total Score'),rowData['score'].toString()),
+                    _rowScoreType(lang.tr('Mention'),rowData['mention'].toString()),
                   ]
                 )
               )
@@ -271,7 +304,7 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(lang.tr('Rank'), style:TextStyle(
-                fontFamily: 'Montserrat',
+                fontFamily: currentFont,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Colors.white
@@ -279,7 +312,7 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
               ),
               Text(
                 strData, style:TextStyle(
-                fontFamily: 'Montserrat',
+                fontFamily: currentFont,
                 fontSize: 30,
                 fontWeight: FontWeight.w600,
                 color: Colors.white
@@ -293,7 +326,7 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
   }
 
 
-  Widget _rowScoreType(String textData, String priceData,double fontSize){
+  Widget _rowScoreType(String textData, String priceData){
     return new Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.black26,width: 1.0))
@@ -302,8 +335,8 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
         children:[
          Expanded(
            child: Text(textData,style: TextStyle(
-             fontFamily: 'Montserrat',
-             fontSize: fontSize,
+             fontFamily: currentFont,
+             fontSize: 14.0,
              fontWeight: FontWeight.w500,
              color: Color(0xff07548f).withOpacity(0.9)
            )),
@@ -312,8 +345,8 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
            child:  Align(
              alignment: Alignment.topRight,
              child: Text(priceData,style: TextStyle(
-               fontFamily: 'Montserrat',
-               fontSize: fontSize,
+               fontFamily: currentFont,
+               fontSize: 14.0,
                fontWeight: FontWeight.bold,
                color: Color(0xff07548f),
                fontStyle: FontStyle.italic
